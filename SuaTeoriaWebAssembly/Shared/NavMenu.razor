@@ -1,0 +1,162 @@
+﻿
+@*NAVIGATION MENU*@
+<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+    <div class=container>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="col-2 col-lg-2 col-md-2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="">
+                        <NavLink class="nav-link" href="">
+                            <img src="images/Logo.png" class="logo" />
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-8 col-lg-8 col-md-8">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                            <span aria-hidden="true"></span> HOME
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="counter">
+                            <span aria-hidden="true"></span> ANIMES/MANGÁS
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="fetchdata">
+                            <span aria-hidden="true"></span> SÉRIES
+                        </NavLink>
+                    </li>
+
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="filmes">
+                            <span aria-hidden="true"></span> FILMES
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="hqs">
+                            <span aria-hidden="true"></span> HQs
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="suateoria">
+                            <span aria-hidden="false"></span> SUA TEORIA
+                        </NavLink>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-2 col-lg-2 col-md-2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="oi oi-home"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @if (usuario)
+                            {
+                                <a class="dropdown-item text-black">Meu Perfil</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-black">Sair</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#exampleModal">Entrar</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-black" href="">Criar Nova Conta</a>
+                            }
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+        @* <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>*@
+
+    </div>
+</nav>
+@*FIM MENU NAV*@
+
+
+@*------------------------------------------------------------------------------------------------------------------------------------*@
+
+
+
+@*MODAL PARA ENTRAR*@
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Usuario / Email</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Senha</label>
+            <input type="password" class="form-control" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+@*FIM MODAL*@
+
+@*----------------------------------------------------------------------------------------------------------------------*@
+
+
+@*MODAL PARA CRIAR CONTA*@
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+@*FIM MODAL*@
+
+@code {
+    bool usuario = false;
+
+}
