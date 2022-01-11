@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height:40em;
+    min-height: 100vh;
 }
 
 main {
@@ -49,12 +49,16 @@ main {
     .top-row ::deep a, .top-row ::deep .btn-link {
         margin-left: 0;
     }
+
+    .page{
+        min-height:100vh;
+    }
 }
 
 @media (min-width: 641px) {
     .page {
         flex-direction: row;
-        min-height:50em;
+        min-height: 100vh;
     }
 
     .sidebar {
