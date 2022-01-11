@@ -49,6 +49,10 @@ main {
     .top-row ::deep a, .top-row ::deep .btn-link {
         margin-left: 0;
     }
+    .page {
+        flex-direction: row;
+        min-height: 40em;
+    }
 }
 
 @media (min-width: 641px) {
