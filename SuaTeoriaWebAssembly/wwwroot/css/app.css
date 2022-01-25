@@ -68,9 +68,9 @@ a, .btn-link {
 /*TELA INICIAL*/
 
 
-#imagemInicio{
-    height:100%;
-    width:100%;
+#imagemInicio {
+    height: 100%;
+    width: 100%;
 }
 
 #textoInicio {
@@ -81,22 +81,36 @@ a, .btn-link {
     max-height: 32px; /* fallback */
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
-    
 }
 
-a{
+a {
     text-decoration: none;
 }
 
 #textoInicio:hover {
-    text-decoration-line:underline;
+    text-decoration-line: underline;
 }
 
-#menuLateralImg{
-    width:100%;
-    height:100%;
+#menuLateralImg {
+    width: 100%;
+    height: 100%;
 }
 
+.fontePadrao {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
 
 
 /*FIM TELA INICIAL*/
+/*SUA TEORIA*/
+#tituloTeoria {
+    font-size: 3em;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+}
+
+
+
+
+/*FIM SUA TEORIA*/
