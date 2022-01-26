@@ -1,17 +1,53 @@
 ﻿@page "/suateoria"
+@inject IJSRuntime js
 
 <div class="container">
-    <div id="divTituloTeoria">
-        <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." />
+    <div class=row>
+        <div id="divTituloTeoria" class="col-sm-12 my-3">
+            <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." />
+        </div>
+        <select placeholder="Selecione uma categoria" class="col-md-6 col-sm-12">
+            <option></option>
+            <option>Animes / Mangás</option>
+            <option>Séries</option>
+            <option>Filmes</option>
+            <option>HQs</option>
+        </select>
+        <select id="select-state" placeholder="Selecione uma obra" class="col-md-6 col-sm-12">
+            <option value="">Select a state...</option>
+            <option value="AL">One Piece</option>
+            <option value="AK">Bleach</option>
+            <option value="AZ">Dragon Ball Super</option>
+            <option value="AR">Dragon Ball Z</option>
+            <option value="CA">Dragon Ball GT</option>
+            <option value="CO">Boku no Hero (My Hero Academy)</option>
+            <option value="CT">Kimetsu no Yaiba (Demon Slayer)</option>
+            <option value="DE">Death Note</option>
+            <option value="DC">Mirai Nikki</option>
+            <option value="FL">Shingeki no Kyojin (Attack on Titan)</option>
+            <option value="GA">Naruto (Classico)</option>
+            <option value="HI">Naruto Shippuden</option>
+            <option value="ID">Boruto</option>
+            <option value="IL">Kuroko no Basket</option>
+            <option value="IN">One Punch Man</option>
+        </select>
     </div>
-    <div>
+    <div class="my-3">
         <CriaTextoTeoria></CriaTextoTeoria>
     </div>
 </div>
 
-@code{
+@code {
 
     int count = 1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await js.InvokeVoidAsync("teste");
+    }
+
+
     void Add()
     {
         count++;
