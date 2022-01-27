@@ -5,3 +5,8 @@
         });
     });
 }
+
+function getHtml() {
+    var htmlText = document.getElementById("textoTeoria").innerHTML;
+    return htmlText;
+}

@@ -35,21 +35,25 @@
     <div class="my-3">
         <CriaTextoTeoria></CriaTextoTeoria>
     </div>
+@htmlText
+
 </div>
+
+<button @onclick="getHtml">Salvar</button>
 
 @code {
 
     int count = 1;
-
+    string htmlText = "";
 
     protected override async Task OnInitializedAsync()
     {
         await js.InvokeVoidAsync("teste");
     }
 
-
-    void Add()
+    async Task getHtml()
     {
-        count++;
+        htmlText = await js.InvokeAsync<string>("getHtml");
     }
+
 }

@@ -1,5 +1,41 @@
-﻿<h3>CriaImagemTeoria</h3>
+﻿@inject IJSRuntime js
+
+<div class="drag-drop-zone">
+    <BlazorInputFile.InputFile OnChange="HandleFileSelect"></BlazorInputFile.InputFile>
+</div>
+
+@if (!String.IsNullOrEmpty(img64))
+{
+    <img style="height:10em; width:5em;" src="data:image/jpeg;base64, @img64" />
+}
 
 @code {
+    IFileListEntry? file;
+    string? img64;
+    string errMessage = "";
+
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+        }
+        await GetBase64File();
+        StateHasChanged();
+    }
+
+    async Task GetBase64File()
+    {
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        img64 = Convert.ToBase64String(bytes);
+    }
 
 }

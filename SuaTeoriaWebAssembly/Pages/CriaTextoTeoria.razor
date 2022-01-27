@@ -1,5 +1,26 @@
 ﻿
 
-<div contenteditable="true" class="divEditorTeoria">
+<div contenteditable="true" class="divEditorTeoria" id="textoTeoria">
     Comece a criar sua teoria aqui :)
+    @for (int i = 0; i < count; i++)
+    {
+        <CriaImagemTeoria></CriaImagemTeoria>
+    }
 </div>
+<div contenteditable="false" class="text-center">
+    <button @onclick="AdicionaImagem">AdicionarImagem</button>
+</div>
+
+
+
+@code {
+    SuaTeoria st = new SuaTeoria();
+    int count = 0;
+
+    void AdicionaImagem()
+    {
+        count++;
+    }
+
+   
+}
