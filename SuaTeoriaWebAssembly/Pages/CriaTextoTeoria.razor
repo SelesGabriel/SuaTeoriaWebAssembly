@@ -2,13 +2,18 @@
 
 <div contenteditable="true" class="divEditorTeoria" id="textoTeoria">
     Comece a criar sua teoria aqui :)
-    @for (int i = 0; i < count; i++)
+    @foreach (var imagem in imagens)
     {
-        <CriaImagemTeoria></CriaImagemTeoria>
+        <div contenteditable="false">
+        <CriaImagemTeoria></CriaImagemTeoria><a title="Remover" style="color:black;font-size:1em;" @onclick="(()=>RemoveImagem(imagem))" class="fa fa-trash"></a>
+        </div>
+        <br />
+        <br />
+       
     }
 </div>
 <div contenteditable="false" class="text-center">
-    <button @onclick="AdicionaImagem">AdicionarImagem</button>
+    <a @onclick="AdicionaImagem" class="fa fa-image" style="font-size: 3em;color: black;"></a>
 </div>
 
 
@@ -16,11 +21,19 @@
 @code {
     SuaTeoria st = new SuaTeoria();
     int count = 0;
+    int i;
+    bool val = false;
+    List<CriaImagemTeoria> imagens = new List<CriaImagemTeoria>();
+    CriaImagemTeoria imagem;
 
     void AdicionaImagem()
     {
-        count++;
+        imagens.Add(imagem);
     }
 
-   
+    void RemoveImagem(CriaImagemTeoria img)
+    {
+        imagens.Remove(img);
+    }
+
 }

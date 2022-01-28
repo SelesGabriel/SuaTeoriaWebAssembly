@@ -3,7 +3,7 @@
 
 <div class="container">
     <div class=row>
-        <div id="divTituloTeoria" class="col-sm-12 my-3">
+        <div class="col-sm-12 my-3">
             <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." />
         </div>
         <select placeholder="Selecione uma categoria" class="col-md-6 col-sm-12">
@@ -33,18 +33,65 @@
         </select>
     </div>
     <div class="my-3">
+        <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile> 
+        <label for="imagemTitulo" 
+        style="background-color:#ccc;width:100%;
+            border-radius:5px;cursor:pointer;padding:10px;text-align:center">
+            Escolha uma imagem para ser capa da sua teoria &#187</label>
+        @if (!String.IsNullOrEmpty(img64))
+        {
+            <img style="height:50%; width:100%;" src="data:image/jpeg;base64, @img64" />
+        }
+    </div>
+
+    <div class="my-3">
         <CriaTextoTeoria></CriaTextoTeoria>
     </div>
-@htmlText
 
 </div>
 
-<button @onclick="getHtml">Salvar</button>
+<button @onclick="getHtml" class="btn-dark my-5">Salvar</button>
+    
+
+
 
 @code {
-
+    IFileListEntry? file;
+    string? img64;
+    string errMessage = "";
+    string mensagem = "Escolha uma imagem para ser capa da sua teoria";
     int count = 1;
-    string htmlText = "";
+    public string htmlText { get; set; } = "";
+    string input = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"><!--!--><input type=\"file\" _bl_2=\"\"></div>";
+    string dragDropZone = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"></div>";
+    string largura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+    string altura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+
+        }
+        await GetBase64File();
+        StateHasChanged();
+    }
+
+    async Task GetBase64File()
+    {
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        img64 = Convert.ToBase64String(bytes);
+        mensagem = "";
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,6 +101,8 @@
     async Task getHtml()
     {
         htmlText = await js.InvokeAsync<string>("getHtml");
+        htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
+        //Chamar API para salvar no banco.
     }
 
 }

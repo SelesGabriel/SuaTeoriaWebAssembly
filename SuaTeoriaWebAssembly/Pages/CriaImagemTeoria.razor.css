@@ -4,6 +4,7 @@
     color: #aeaeae;
     margin: 0.5rem;
     width:400px;
+    display:none;
 }
 
     .drag-drop-zone:hover{
@@ -13,3 +14,24 @@
     .drag-drop-zone input[type=file] {
         color:red;
     }
+
+.tamanhoImagem{
+    width:45px;
+    border-radius:5px;
+}
+
+input[type='file'] {
+    display: none;
+}
+
+/* Aparência que terá o seletor de arquivo */
+label {
+    background-color: black;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px;
+    padding: 6px 20px
+}
+
+
