@@ -2,22 +2,25 @@
 
     @if (img64 == null)
 {
-    <label for='selecao-arquivo'>Selecionar um arquivo &#187;</label>
-    <div class="drag-drop-zone">
-        <BlazorInputFile.InputFile OnChange="HandleFileSelect" id='selecao-arquivo'></BlazorInputFile.InputFile>
+    <div contenteditable="false">
+        <label for='selecao-arquivo'>Selecionar um arquivo &#187;</label>
+        <div class="drag-drop-zone">
+            <BlazorInputFile.InputFile OnChange="HandleFileSelect" id='selecao-arquivo'></BlazorInputFile.InputFile>
+        </div>
     </div>
+
 }
 
 @if (!String.IsNullOrEmpty(img64))
 {
     <div contenteditable=false>
         <i class="fa fa-arrows-alt-v"></i>
-        <input class="tamanhoImagem" type="number" min="4" max=99 @bind-value="heightInt" />
+        <input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="heightInt" />
         <i class="fa fa-arrows-alt-h"></i>
-        <input class="tamanhoImagem" type="number" min="4" max=99 @bind-value="widthInt" />
+        <input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="widthInt" />
     </div>
     <br />
-    <img style="height:@height; width:@width; max-width:100%; margin-right:10px;" src="data:image/jpeg;base64, @img64" />
+    <img style="height:@height; width:@width; max-width:100%; max-height:1000px; margin-right:10px;" src="data:image/jpeg;base64, @img64" />
 }
 
 @code {
@@ -34,8 +37,8 @@
     {
         if (!firstRender)
         {
-            width = widthInt.ToString() + "rem";
-            height = heightInt.ToString() + "rem";
+            width = widthInt.ToString() + "vw";
+            height = heightInt.ToString() + "vh";
         }
     }
 

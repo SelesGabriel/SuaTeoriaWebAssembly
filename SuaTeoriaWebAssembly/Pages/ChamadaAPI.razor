@@ -1,0 +1,33 @@
+﻿@page "/chamada"
+@inject HttpClient http
+
+<h1>Chamada de api</h1>
+<button @onclick=GetUsers>Buscar</button>
+
+<thead>
+    <tr>
+        <th>Nome</th>
+        <th>Usuario</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach(var user in usuarios)
+    {
+        <tr>
+            <td>@user.nome</td>
+            <td>@user.user</td>
+        </tr>
+    }
+</tbody>
+
+@code{
+    List<Usuario> usuarios = new();
+    async Task GetUsers()
+    {
+
+        usuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285");
+    }
+
+   
+    
+}

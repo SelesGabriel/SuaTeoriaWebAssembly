@@ -4,13 +4,11 @@
     Comece a criar sua teoria aqui :)
     @foreach (var imagem in imagens)
     {
-        <div contenteditable="false">
-        <CriaImagemTeoria></CriaImagemTeoria><a title="Remover" style="color:black;font-size:1em;" @onclick="(()=>RemoveImagem(imagem))" class="fa fa-trash"></a>
-        </div>
-        <br />
-        <br />
-       
+            <CriaImagemTeoria></CriaImagemTeoria>
+            @*<a title="Remover" style="color:black;font-size:1em;" @onclick="(()=>RemoveImagem(imagem))" class="fa fa-trash"></a>*@
+            
     }
+
 </div>
 <div contenteditable="false" class="text-center">
     <a @onclick="AdicionaImagem" class="fa fa-image" style="font-size: 3em;color: black;"></a>
