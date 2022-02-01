@@ -3,6 +3,19 @@
 
 <h1>Chamada de api</h1>
 <button @onclick=GetUsers>Buscar</button>
+<EditForm Model="user1" OnSubmit="@PostUsers">
+    <label form="nome">Nome</label>
+    <InputText @bind-Value="user1.nome"></InputText>
+    <label form="user">User</label>
+    <InputText @bind-Value="user1.user"></InputText>
+    <label form="email">Email</label>
+    <InputText @bind-Value="user1.email"></InputText>
+    <label form="senha">Senha</label>
+    <InputText @bind-Value="user1.senha"></InputText>
+    <input type="submit" value="Enviar" />
+</EditForm>
+
+
 
 <thead>
     <tr>
@@ -11,7 +24,7 @@
     </tr>
 </thead>
 <tbody>
-    @foreach(var user in usuarios)
+    @foreach (var user in usuarios)
     {
         <tr>
             <td>@user.nome</td>
@@ -20,14 +33,22 @@
     }
 </tbody>
 
-@code{
+
+
+@code {
     List<Usuario> usuarios = new();
+    Usuario user1 = new();
     async Task GetUsers()
     {
-
-        usuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285");
+        
+        usuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285/usuarios");
     }
 
-   
-    
+    async Task PostUsers()
+    {
+        await http.PostAsJsonAsync<Usuario>("http://localhost:5285/usuarios", user1);
+    }
+
+
+
 }
