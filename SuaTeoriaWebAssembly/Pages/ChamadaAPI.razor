@@ -1,9 +1,10 @@
 ﻿@page "/chamada"
 @inject HttpClient http
+@inject IJSRuntime js
 
 <h1>Chamada de api</h1>
-<button @onclick=GetUsers>Buscar</button>
-<EditForm Model="user1" OnSubmit="@PostUsers">
+@*<button @onclick=GetUsers>Buscar</button>
+    <EditForm Model="user1" OnSubmit="@PostUsers">
     <label form="nome">Nome</label>
     <InputText @bind-Value="user1.nome"></InputText>
     <label form="user">User</label>
@@ -13,42 +14,73 @@
     <label form="senha">Senha</label>
     <InputText @bind-Value="user1.senha"></InputText>
     <input type="submit" value="Enviar" />
-</EditForm>
+    </EditForm>*@
 
 
 
-<thead>
-    <tr>
-        <th>Nome</th>
-        <th>Usuario</th>
-    </tr>
-</thead>
-<tbody>
-    @foreach (var user in usuarios)
-    {
-        <tr>
-            <td>@user.nome</td>
-            <td>@user.user</td>
-        </tr>
-    }
-</tbody>
+
+
+<div class="container">
+    <div class=row>
+        <div class="col-sm-12 my-3">
+            <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." />
+        </div>
+        <select placeholder="Selecione uma categoria" class="col-md-6 col-sm-12">
+            <option></option>
+            @foreach (var item in categorias)
+            {
+                <option>@item.Nome</option>
+            }
+        </select>
+        <select id="select-state" placeholder="Selecione uma obra" class="col-md-6 col-sm-12">
+            <option value="">Select a state...</option>
+            @foreach (var item in obras)
+            {
+                <option>@item.Nome</option>
+            }
+        </select>
+    </div>
+
+</div>
 
 
 
 @code {
     List<Usuario> usuarios = new();
     Usuario user1 = new();
+
+    List<Categoria> categorias = new();
+    Categoria categoria = new();
+    List<Obra> obras = new();
+    Obra obra = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+         await js.InvokeVoidAsync("teste");
+        await GetObrasAsync();
+        await GetCategoriaAsync();
+    }
+
     async Task GetUsers()
     {
-        
+
         usuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285/usuarios");
+    }
+
+
+    async Task GetCategoriaAsync()
+    {
+        categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+    }
+
+    async Task GetObrasAsync()
+    {
+        obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
     }
 
     async Task PostUsers()
     {
         await http.PostAsJsonAsync<Usuario>("http://localhost:5285/usuarios", user1);
     }
-
-
-
 }

@@ -2,10 +2,10 @@
 {
     public class Usuario
     {
-        Guid id { get; }
-        public string nome { get; set; }
-        public string user { get; set; }
-        public string email { get; set; }
-        public string senha { get; set; }
+        public int Id { get; set;}
+        public string Nome { get; set; }
+        public string User { get; set; }
+        public string Email { get; set; }
+        public string Senha { get; set; }
     }
 }

@@ -1,63 +1,74 @@
 ﻿@page "/suateoria"
 @inject IJSRuntime js
+@inject HttpClient http
 
-<div class="container">
-    <div class=row>
-        <div class="col-sm-12 my-3">
-            <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." />
+<EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
+
+    <div class="container">
+        <div class=row>
+            <div class="col-sm-12 my-3">
+                <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." @bind-value="teoria.Titulo" />
+            </div>
+            <div class="col-md-6 col-sm-12">
+
+                <select class="form-select" @bind="teoria.IdCategoria">
+                    <option value="0">Selecione uma categoria</option>
+                    @foreach (var item in categorias)
+                    {
+                        <option value="@item.Id">@item.Nome</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <select class="form-select" @bind="teoria.IdObra">
+                    <option value="0">Selecione um título</option>
+                    @if (teoria.IdCategoria >= 1)
+                    {
+                        <option value="-1">Não encontrei</option>
+                        @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o=>o.Nome))
+                        {
+                            <option value="@item.Id">@item.Nome</option>
+                        }
+                    }
+                </select>
+            </div>
+            @if (teoria.IdObra == -1)
+            {
+                <div class="my-3 text-center col-4"></div>
+                <div class="my-3 text-center col-4">
+                    <label>Qual você deseja adicionar?</label>
+                    <input type="text" class="form-control" @bind-value="teoria.NovaObra" />
+                </div>
+                <div class="my-3 text-center col-4"></div>
+            }
         </div>
-        <select placeholder="Selecione uma categoria" class="col-md-6 col-sm-12">
-            <option></option>
-            <option>Animes / Mangás</option>
-            <option>Séries</option>
-            <option>Filmes</option>
-            <option>HQs</option>
-        </select>
-        <select id="select-state" placeholder="Selecione uma obra" class="col-md-6 col-sm-12">
-            <option value="">Select a state...</option>
-            <option value="AL">One Piece</option>
-            <option value="AK">Bleach</option>
-            <option value="AZ">Dragon Ball Super</option>
-            <option value="AR">Dragon Ball Z</option>
-            <option value="CA">Dragon Ball GT</option>
-            <option value="CO">Boku no Hero (My Hero Academy)</option>
-            <option value="CT">Kimetsu no Yaiba (Demon Slayer)</option>
-            <option value="DE">Death Note</option>
-            <option value="DC">Mirai Nikki</option>
-            <option value="FL">Shingeki no Kyojin (Attack on Titan)</option>
-            <option value="GA">Naruto (Classico)</option>
-            <option value="HI">Naruto Shippuden</option>
-            <option value="ID">Boruto</option>
-            <option value="IL">Kuroko no Basket</option>
-            <option value="IN">One Punch Man</option>
-        </select>
-    </div>
-    <div class="my-3">
-        <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile> 
-        <label for="imagemTitulo" 
-        style="background-color:#ccc;width:100%;
+        <div class="my-3">
+            <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile>
+            <label for="imagemTitulo"
+                   style="background-color:#ccc;width:100%;
             border-radius:5px;cursor:pointer;padding:10px;text-align:center">
-            Escolha uma imagem para ser capa da sua teoria &#187</label>
-        @if (!String.IsNullOrEmpty(img64))
-        {
-            <img style="height:50%; width:100%;" src="data:image/jpeg;base64, @img64" />
-        }
+                Clique aqui para escolher uma imagem para ser capa da sua teoria &#187
+            </label>
+            @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
+            {
+                <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+            }
+        </div>
+
+        <div class="my-3">
+            <CriaTextoTeoria></CriaTextoTeoria>
+        </div>
     </div>
 
-    <div class="my-3">
-        <CriaTextoTeoria></CriaTextoTeoria>
-    </div>
+    <input type="submit" value="Enviar" class="btn-dark my-5">
+    @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
 
-</div>
-
-<button @onclick="getHtml" class="btn-dark my-5">Salvar</button>
-    
+</EditForm>
 
 
 
 @code {
     IFileListEntry? file;
-    string? img64;
     string errMessage = "";
     string mensagem = "Escolha uma imagem para ser capa da sua teoria";
     int count = 1;
@@ -66,6 +77,31 @@
     string dragDropZone = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"></div>";
     string largura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
     string altura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+
+    int idCategoria;
+    int valorNaoEncontrei;
+
+
+
+    List<Categoria> categorias = new();
+    Categoria categoria = new();
+    List<Obra> obras = new();
+    Obra obra = new();
+
+    Teoria teoria = new();
+
+    protected override async  Task OnAfterRenderAsync(bool firstRender)
+    {
+        await getHtml();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //await js.InvokeVoidAsync("teste");
+        await GetObrasAsync();
+        await GetCategoriaAsync();
+    }
 
     async Task HandleFileSelect(IFileListEntry[] files)
     {
@@ -89,20 +125,30 @@
         byte[] bytes;
         var memoryStream = await file.ReadAllAsync();
         bytes = memoryStream.ToArray();
-        img64 = Convert.ToBase64String(bytes);
+        teoria.ImagemTitulo = Convert.ToBase64String(bytes);
         mensagem = "";
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await js.InvokeVoidAsync("teste");
-    }
 
     async Task getHtml()
     {
         htmlText = await js.InvokeAsync<string>("getHtml");
         htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
-        //Chamar API para salvar no banco.
+        teoria.Conteudo = htmlText;
     }
 
+    async Task GetCategoriaAsync()
+    {
+        categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+    }
+
+    async Task GetObrasAsync()
+    {
+        obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+    }
+
+    async Task PostTeoriaAsync()
+    {
+        await http.PostAsJsonAsync<Teoria>("http://localhost:5285/teoria", teoria);
+    }
 }

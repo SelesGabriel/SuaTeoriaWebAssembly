@@ -2,8 +2,8 @@
 {
     public class Obra
     {
-        public Guid Id { get; }
-        public string Nome { get; }
-        public Categoria Categoria { get; }
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public int IdCategoria { get; set; }
     }
 }

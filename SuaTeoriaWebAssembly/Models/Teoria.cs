@@ -2,13 +2,14 @@
 {
     public class Teoria
     {
-        public Guid Id { get; }
-        public string Titulo { get; }
-        public Categoria Categoria { get; }
-        public Obra Obra { get; }
-        public string ImagemTitulo { get; }
-        public string Conteudo { get; }
-        public DateTime DataCriacao { get; }
-        public Usuario Usuario { get; }
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public string Conteudo { get; set; }
+        public string ImagemTitulo { get; set; }
+        public DateTime DataCriacao { get; set;} = DateTime.Now;
+        public int IdCategoria { get; set; }
+        public int IdObra { get; set; }
+        public int IdUsuario { get; set; }
+        public string NovaObra { get; set; }
     }
 }
