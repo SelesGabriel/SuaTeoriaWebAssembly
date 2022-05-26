@@ -1,0 +1,107 @@
+﻿@inject HttpClient http
+
+<div class="col-lg-4 col-md-5 col-sm-6">
+    <div class="container">
+        <h4 class="fontePadrao">OS MAIS FALADOS</h4>
+        @if (maisFalados != null)
+        {
+            @foreach (var item in maisFalados)
+            {
+                <div class="dropdown-divider"></div>
+                <div class="row py-2">
+                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
+                    <div class="col-6"><a href="#">@item.NomeObra</a></div>
+                </div>
+            }
+        }
+        <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
+        @if (topTeorias != null)
+        {
+            @foreach (var item in topTeorias)
+            {
+                <div class="dropdown-divider"></div>
+                <div class="row py-2">
+                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
+                    <div class="col-6"><a href="#">@item.Titulo</a></div>
+                </div>
+            }
+        }
+
+        <h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>
+        @if (topUsuarios != null)
+        {
+            @foreach (var item in topUsuarios)
+            {
+
+                <div class="dropdown-divider"></div>
+                <div class="row py-2">
+                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png /></a></div>
+                    <div class="col-6"><a href="#">@item.User</a></div>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+
+@code {
+    Teoria teoria = new();
+    List<Teoria> teorias = new();
+    List<TopObras> maisFalados = new();
+    List<TopTeorias> topTeorias = new();
+    List<TopUsuarios> topUsuarios = new();
+
+    #region Pagination
+    [Parameter]
+    public int PageIndex { get; set; }
+    [Parameter]
+    public int TotalPages { get; set; }
+    [Parameter]
+    public int Radius { get; set; }
+    [Parameter]
+    public EventCallback<int> OnSelectedPage { get; set; }
+
+    #endregion
+
+    class TopObras
+    {
+        public string NomeObra { get; set; }
+    }
+
+    class TopTeorias
+    {
+        public string Titulo { get; set; }
+    }
+
+    class TopUsuarios
+    {
+        public string User { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetTeorias();
+        await GetTopObras();
+        await GetTopTeorias();
+        await GetTopUsuarios();
+    }
+
+    async Task GetTopObras()
+    {
+        maisFalados = await http.GetFromJsonAsync<List<TopObras>>("http://localhost:5285/topobras");
+    }
+    async Task GetTeorias()
+    {
+        teorias = await http.GetFromJsonAsync<List<Teoria>>("http://localhost:5285/teorias");
+    }
+
+    async Task GetTopTeorias()
+    {
+        topTeorias = await http.GetFromJsonAsync<List<TopTeorias>>("http://localhost:5285/topteorias");
+    }
+
+    async Task GetTopUsuarios()
+    {
+        //topUsuarios = await http.GetFromJsonAsync<List<TopUsuarios>>("http://localhost:5285/topusuarios");
+    }
+}
