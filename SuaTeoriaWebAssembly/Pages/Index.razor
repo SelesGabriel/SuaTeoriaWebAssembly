@@ -8,18 +8,19 @@
                 <h2 class="fontePadrao">AS MAIS RECENTES</h2>
                 <div class="dropdown-divider"></div>
                 <div class="row">
-                    @foreach (var item in teorias)
+                    @if (teorias != null)
+                    {
+                        @foreach (var item in teorias)
                         {
-                        <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="">
-                        <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
-                        <p id="textoInicio">@item.Titulo</p>
-                        </a>
-                        </div>
+                            <div class="col-lg-6 col-md-12 py-5">
+                                <a href="#" title="">
+                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
+                                    <p id="textoInicio">@item.Titulo</p>
+                                </a>
+                            </div>
                         }
-                    
-                        
-                     
+                    }
+
 
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
@@ -29,9 +30,9 @@
                                     <span class="sr-only">Previous</span>
                                 </a>
                             </li>
-                            
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            
+
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+
                             <li class="page-item">
                                 <a class="page-link" href="#" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
@@ -46,36 +47,42 @@
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
                 <h4 class="fontePadrao">OS MAIS FALADOS</h4>
-                @foreach (var item in maisFalados)
+                @if (maisFalados != null)
                 {
-
-                    <div class="dropdown-divider"></div>
-                    <div class="row py-2">
-                        <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
-                        <div class="col-6"><a href="#">@item.NomeObra</a></div>
-                    </div>
-
+                    @foreach (var item in maisFalados)
+                    {
+                        <div class="dropdown-divider"></div>
+                        <div class="row py-2">
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
+                            <div class="col-6"><a href="#">@item.NomeObra</a></div>
+                        </div>
+                    }
                 }
                 <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
-                @foreach (var item in topTeorias)
+                @if (topTeorias != null)
                 {
-
-                    <div class="dropdown-divider"></div>
-                    <div class="row py-2">
-                        <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
-                        <div class="col-6"><a href="#">@item.Titulo</a></div>
-                    </div>
+                    @foreach (var item in topTeorias)
+                    {
+                        <div class="dropdown-divider"></div>
+                        <div class="row py-2">
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
+                            <div class="col-6"><a href="#">@item.Titulo</a></div>
+                        </div>
+                    }
                 }
 
                 <h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>
-                @foreach (var item in topUsuarios)
+                @if (topUsuarios != null)
                 {
+                    @foreach (var item in topUsuarios)
+                    {
 
-                    <div class="dropdown-divider"></div>
-                    <div class="row py-2">
-                        <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png /></a></div>
-                        <div class="col-6"><a href="#">@item.User</a></div>
-                    </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="row py-2">
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png /></a></div>
+                            <div class="col-6"><a href="#">@item.User</a></div>
+                        </div>
+                    }
                 }
 
             </div>
@@ -103,7 +110,6 @@
     [Parameter]
     public EventCallback<int> OnSelectedPage { get; set; }
 
-    protected override 
     #endregion
 
     class TopObras
@@ -145,6 +151,6 @@
 
     async Task GetTopUsuarios()
     {
-        topUsuarios = await http.GetFromJsonAsync<List<TopUsuarios>>("http://localhost:5285/topusuarios");
+        //topUsuarios = await http.GetFromJsonAsync<List<TopUsuarios>>("http://localhost:5285/topusuarios");
     }
 }

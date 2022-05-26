@@ -1,4 +1,6 @@
-﻿
+﻿@inject IJSRuntime js
+@inject HttpClient http
+
 @*NAVIGATION MENU*@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class=container>
@@ -57,13 +59,13 @@
                             <span class="fa fa-user"></span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @if (usuario)
+                            @if (1 != 1)//Usuario logado
                             {
                                 <a class="dropdown-item text-black">Meu Perfil</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-black">Sair</a>
                             }
-                            else
+                            else//usuario deslogado
                             {
                                 <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalEntrar">Entrar</a>
                                 <div class="dropdown-divider"></div>
@@ -78,9 +80,9 @@
 
 
         @* <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>*@
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>*@
 
     </div>
 </nav>
@@ -93,32 +95,32 @@
 
 @*MODAL PARA ENTRAR*@
 <div class="modal fade" id="modalEntrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Entrar</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="usuarioLogin" class="col-form-label">Usuario / Email</label>
-            <input type="text" class="form-control" id="usuarioLogin" placeholder="Usuario ou Email">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Senha</label>
-            <input type="password" class="form-control" placeholder="Senha" />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Entrar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Entrar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="usuarioLogin" class="col-form-label">Usuario / Email</label>
+                        <input type="text" class="form-control" id="usuarioLogin" placeholder="Usuario ou Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Senha</label>
+                        <input type="password" class="form-control" placeholder="Senha" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Entrar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 @*FIM MODAL*@
 
@@ -126,53 +128,55 @@
 
 
 @*MODAL PARA CRIAR CONTA*@
-<div class="modal fade" id="modalCriar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Cadastrar</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="nomeCriacao" class="col-form-label">Nome</label>
-            <input type="text" class="form-control" id="nomeCriacao" placeholder="Nome Completo">
-          </div>
-          <div class="form-group">
-            <label for="usuarioCriacao" class="col-form-label">Usuário</label>
-            <input type="text" class="form-control" id="usuarioCriacao" placeholder="Usuário">
-          </div>
-          <div class="form-group">
-            <label for="emailCriacao" class="col-form-label">Email</label>
-            <input type="email" class="form-control" id="emailCriacao" placeholder="seuemail@email.com">
-          </div>
-          <div class="form-group">
-            <label for="senhaCriacao" class="col-form-label">Senha</label>
-            <input type="password" class="form-control" id="senhaCriacao" placeholder="Senha">
-          </div>
-          <div class="form-group">
-            <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha</label>
-            <input type="password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Cadastrar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
+<EditForm Model="usuario" OnSubmit="@PostUsuario">
+    <div class="modal fade" id="modalCriar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cadastrar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="nomeCriacao" class="col-form-label">Nome</label>
+                            <input @bind-value="usuario.Nome" type="text" class="form-control" id="nomeCriacao" placeholder="Nome Completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="usuarioCriacao" class="col-form-label">Usuário</label>
+                            <input @bind-value="usuario.User" type="text" class="form-control" id="usuarioCriacao" placeholder="Usuário">
+                        </div>
+                        <div class="form-group">
+                            <label for="emailCriacao" class="col-form-label">Email</label>
+                            <input @bind-value="usuario.Email" type="email" class="form-control" id="emailCriacao" placeholder="seuemail@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="senhaCriacao" class="col-form-label">Senha</label>
+                            <input @bind-value="usuario.Senha" type="password" class="form-control" id="senhaCriacao" placeholder="Senha">
+                        </div>
+                        <div class="form-group">
+                            <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha</label>
+                            <input type="password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+</EditForm>
 @*FIM MODAL*@
 
 @code {
-
-    #region Usuario
-    bool usuario = false;
-    #endregion
-    
+    Usuario usuario = new();
+    async Task PostUsuario()
+    {
+        await http.PostAsJsonAsync<Usuario>("http://localhost:5285/usuarios", usuario);
+    }
 
 }
