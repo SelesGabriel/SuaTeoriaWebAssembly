@@ -1,9 +1,11 @@
 ﻿@page "/suateoria"
 @inject IJSRuntime js
 @inject HttpClient http
+@inject NavigationManager nav
 
 <EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
-
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
     <div class="container">
         <div class=row>
             <div class="col-sm-12 my-3">
@@ -54,7 +56,6 @@
                 <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
             }
         </div>
-
         <div class="my-3">
             <CriaTextoTeoria></CriaTextoTeoria>
         </div>
@@ -150,5 +151,6 @@
     async Task PostTeoriaAsync()
     {
         await http.PostAsJsonAsync<Teoria>("http://localhost:5285/teoria", teoria);
+        //nav.NavigateTo("");
     }
 }

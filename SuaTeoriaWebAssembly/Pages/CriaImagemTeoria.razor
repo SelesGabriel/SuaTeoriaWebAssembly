@@ -15,10 +15,11 @@
 {
     <div contenteditable=false>
         <i class="fa fa-arrows-alt-v"></i>
-        <input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="heightInt" />
+        @*<input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="heightInt" />*@
+        <input type="range" min="4" max="99" @bind-value="heightInt">
         <i class="fa fa-arrows-alt-h"></i>
-        <input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="widthInt" />
-         <i class="fa fa-trash"></i>
+        @*<input class="tamanhoImagem" type="number" min="4" max="99" maxlength="2" @bind-value="widthInt" />*@
+        <input type="range" min="4" max="99" @bind-value="widthInt">
     </div>
     <br />
     <img style="height:@height; width:@width; max-width:100%; max-height:1000px; margin-right:10px;" src="data:image/jpeg;base64, @img64" />
@@ -28,13 +29,13 @@
     IFileListEntry? file;
     string? img64;
     string errMessage = "";
-    int widthInt = 5;
-    int heightInt = 5;
+    int widthInt = 50;
+    int heightInt = 50;
     string? width;
     string? height;
 
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
         {

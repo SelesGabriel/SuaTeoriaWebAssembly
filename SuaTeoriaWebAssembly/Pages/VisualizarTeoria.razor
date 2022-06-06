@@ -1,19 +1,25 @@
-﻿@page "/visualizarteoria"
+﻿@page "/visualizarteoria/{IdTeoria:int}"
+@inject HttpClient http
 
-<h2>Titulo da teoria</h2>
-<h2>Imagem da teoria</h2>
-<h2>Criado por:</h2>
-
-
-<div>
-    Conteudo da teoria
+<div class="col-sm-12 my-3">
+    <h2>@teoria.Titulo</h2>
 </div>
-   
+@teoria.Conteudo
 
-@code{
-    Teoria Teoria = new Teoria();
-    protected override void OnInitialized()
+
+@code {
+    Teoria teoria = new Teoria();
+    [Parameter]
+    public int IdTeoria { get; set; }
+    MarkupString conteudo;
+    protected override async Task OnInitializedAsync()
     {
-        
+        await GetTeoriaAsync(IdTeoria);
+    }
+
+    async Task GetTeoriaAsync(int idTeoria)
+    {
+        teoria = await http.GetFromJsonAsync<Teoria>($"http://localhost:5285/teoria/{idTeoria}");
+        conteudo = (MarkupString)teoria.Conteudo;
     }
 }
