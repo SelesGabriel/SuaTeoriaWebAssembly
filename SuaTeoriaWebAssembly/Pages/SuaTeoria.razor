@@ -5,7 +5,7 @@
 
 <EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
     <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
+
     <div class="container">
         <div class=row>
             <div class="col-sm-12 my-3">
@@ -17,7 +17,7 @@
                     <option value="0">Selecione uma categoria</option>
                     @foreach (var item in categorias)
                     {
-                        <option value="@item.Id">@item.Nome</option>
+                        <option value="@item.Id">@item.Nome.ToUpper()</option>
                     }
                 </select>
             </div>
@@ -26,11 +26,11 @@
                     <option value="0">Selecione um título</option>
                     @if (teoria.IdCategoria >= 1)
                     {
-                        <option value="-1">Não encontrei</option>
-                        @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o=>o.Nome))
+                        @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o => o.Nome))
                         {
-                            <option value="@item.Id">@item.Nome</option>
+                            <option value="@item.Id">@item.Nome.ToUpper()</option>
                         }
+                        <option value="-1">Não encontrei</option>
                     }
                 </select>
             </div>
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <input type="submit" value="Enviar" class="btn-dark my-5">
+    <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
     @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
 
 </EditForm>
@@ -76,12 +76,13 @@
     public string htmlText { get; set; } = "";
     string input = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"><!--!--><input type=\"file\" _bl_2=\"\"></div>";
     string dragDropZone = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"></div>";
-    string largura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
-    string altura = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+    //string largura1 = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+    //string largura = "<input type=\"range\" min=\"4\" max=\"99\" \">";
+    //string altura1 = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
+    //string altura = "<input type=\"range\" min=\"4\" max=\"99\" b-zuc3isr0wf=\"\"";
 
     int idCategoria;
     int valorNaoEncontrei;
-
 
 
     List<Categoria> categorias = new();
@@ -91,10 +92,6 @@
 
     Teoria teoria = new();
 
-    protected override async  Task OnAfterRenderAsync(bool firstRender)
-    {
-        await getHtml();
-    }
 
 
     protected override async Task OnInitializedAsync()
@@ -131,12 +128,7 @@
     }
 
 
-    async Task getHtml()
-    {
-        htmlText = await js.InvokeAsync<string>("getHtml");
-        htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
-        teoria.Conteudo = htmlText;
-    }
+
 
     async Task GetCategoriaAsync()
     {
@@ -150,7 +142,51 @@
 
     async Task PostTeoriaAsync()
     {
-        await http.PostAsJsonAsync<Teoria>("http://localhost:5285/teoria", teoria);
-        //nav.NavigateTo("");
+        htmlText = await js.InvokeAsync<string>("getHtml");
+        //htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
+        teoria.Conteudo = htmlText;
+        try
+        {
+            if (string.IsNullOrEmpty(teoria.Titulo))
+            {
+                errMessage = "Coloque um título ppara sua teoria";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else if (teoria.IdCategoria == 0)
+            {
+                errMessage = "Selecione uma categoria";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else if (teoria.IdObra == 0)
+            {
+                errMessage = "Selecione uma obra";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else if (string.IsNullOrEmpty(teoria.ImagemTitulo))
+            {
+                errMessage = "Coloque uma imagem de capa da teoria";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else if (string.IsNullOrEmpty(teoria.Conteudo))
+            {
+                errMessage = "Escreva algo na sua teoria :)";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else
+                await http.PostAsJsonAsync<Teoria>("http://localhost:5285/teoria", teoria);
+        }
+        catch (Exception errMessage)
+        {
+            await js.InvokeVoidAsync("alert", errMessage);
+        }
+        finally
+        {
+            if (errMessage == null || errMessage == "")
+            {
+                await js.InvokeVoidAsync("alert", "Tudo certo!");
+                nav.NavigateTo("");
+
+            }
+        }
     }
 }
