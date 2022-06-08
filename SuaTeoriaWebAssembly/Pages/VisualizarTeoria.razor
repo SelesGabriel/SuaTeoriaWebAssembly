@@ -1,10 +1,13 @@
 ﻿@page "/visualizarteoria/{IdTeoria:int}"
 @inject HttpClient http
 
-<div class="col-sm-12 my-3">
-    <h2>@teoria.Titulo</h2>
+<div class="container">
+    <input type="image" style="height:50%; width:100%; cursor:default" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+    <div class="col-sm-12 my-3">
+        <h2>@teoria.Titulo</h2>
+    </div>
+    @conteudo
 </div>
-@conteudo
 
 
 @code {

@@ -1,0 +1,87 @@
+﻿@page "/painel"
+@inject IJSRuntime js
+@inject HttpClient http
+@inject NavigationManager nav
+
+<EditForm Model="categoria" OnSubmit="@PostCategoriaAsync">
+    <div class="container">
+        <div class="col-sm-12 my-3">
+            <input type="text" placeholder="Nome da categoria" @bind-value="categoria.Nome" />
+            <input type="submit" value="Criar Categoria" class="btn-dark btn-md">
+        </div>
+
+    </div>
+</EditForm>
+
+<EditForm Model="obra" OnSubmit="@PostObraAsync">
+    <div class="container">
+
+        <div class="col-sm-12 my-3">
+             <select class="form-select" @bind="obra.IdCategoria">
+                    <option value="0">Selecione uma categoria</option>
+                    @foreach (var item in categorias)
+                    {
+                        <option value="@item.Id">@item.Nome.ToUpper()</option>
+                    }
+                </select>
+            <input type="text" placeholder="Nome da obra" @bind-value="obra.Nome" />
+            <BlazorInputFile.InputFile OnChange="HandleFileSelect" id="imagemTitulo"></BlazorInputFile.InputFile>
+            <input type="submit" value="Criar Obra" class="btn-dark btn-md">
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    Categoria categoria = new();
+    List<Categoria> categorias = new();
+    Obra obra = new();
+    IFileListEntry? file;
+    string errMessage = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCategoriasAsync();
+    }
+
+    async Task PostCategoriaAsync()
+    {
+
+        await http.PostAsJsonAsync<Categoria>("http://localhost:5285/categorias", categoria);
+    }
+
+    async Task PostObraAsync()
+    {
+        await http.PostAsJsonAsync<Obra>("http://localhost:5285/obras", obra);
+    }
+
+    async Task GetCategoriasAsync()
+    {
+        categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+    }
+
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+
+        }
+        await GetBase64File();
+        StateHasChanged();
+    }
+
+    async Task GetBase64File()
+    {
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        obra.ImagemObra = Convert.ToBase64String(bytes);
+    }
+}
