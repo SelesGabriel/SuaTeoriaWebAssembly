@@ -17,51 +17,88 @@
     <div class="container">
 
         <div class="col-sm-12 my-3">
-             <select class="form-select" @bind="obra.IdCategoria">
-                    <option value="0">Selecione uma categoria</option>
-                    @foreach (var item in categorias)
-                    {
-                        <option value="@item.Id">@item.Nome.ToUpper()</option>
-                    }
-                </select>
+            <select class="form-select" @bind="obra.IdCategoria">
+                <option value="0">Selecione uma categoria</option>
+                @foreach (var item in categorias)
+                {
+                    <option value="@item.Id">@item.Nome.ToUpper()</option>
+                }
+            </select>
             <input type="text" placeholder="Nome da obra" @bind-value="obra.Nome" />
             <BlazorInputFile.InputFile OnChange="HandleFileSelect" id="imagemTitulo"></BlazorInputFile.InputFile>
             <input type="submit" value="Criar Obra" class="btn-dark btn-md">
         </div>
     </div>
 </EditForm>
+@*<EditForm Model="teoria" OnSubmit="@"*@
+<div class="container">
+    <table class="table">
+        <thead>
+        <th scope="col">Titulo da teoria</th>
+        <th scope="col">Nome da nova obra</th>
+        </thead>
+        <tbody>
+                @foreach (var t in Teorias.Where(x => x.IdObra == -1))
+                {
+                    <tr>
+                        <td>@t.Titulo</td>
+                        <td>@t.NovaObra</td>
+                    </tr>
+                }
+        </tbody>
+    </table>
 
-@code {
-    Categoria categoria = new();
-    List<Categoria> categorias = new();
-    Obra obra = new();
-    IFileListEntry? file;
-    string errMessage = "";
+</div>
+
+    @code {
+        Categoria categoria = new();
+        List<Categoria> categorias = new();
+        List<Teoria> Teorias = new();
+        Obra obra = new();
+        Teoria teoria = new();
+        IFileListEntry? file;
+        string errMessage = "";
+
+        int skip = 0;
+        int take = 50;
 
 
-    protected override async Task OnInitializedAsync()
-    {
+        protected override async Task OnInitializedAsync()
+        {
         await GetCategoriasAsync();
-    }
+        await GetTeoriaObraNova();
+        }
 
-    async Task PostCategoriaAsync()
-    {
+        async Task PostCategoriaAsync()
+        {
 
         await http.PostAsJsonAsync<Categoria>("http://localhost:5285/categorias", categoria);
-    }
+        }
 
-    async Task PostObraAsync()
-    {
+        async Task PostObraAsync()
+        {
         await http.PostAsJsonAsync<Obra>("http://localhost:5285/obras", obra);
-    }
+        }
 
-    async Task GetCategoriasAsync()
-    {
+        async Task GetCategoriasAsync()
+        {
         categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
-    }
+        }
 
-    async Task HandleFileSelect(IFileListEntry[] files)
-    {
+        async Task GetTeoriaObraNova()
+        {
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take={take}");
+
+        }
+
+        //async Task AtualizaObraTeoria()
+        //{
+        //    await http.PutAsJsonAsync<Teoria>("http://localhost:5285/teoriaupdate");
+        //}
+
+        #region File Select
+        async Task HandleFileSelect(IFileListEntry[] files)
+        {
         file = files.FirstOrDefault();
         if (file != null)
         {
@@ -75,13 +112,14 @@
         }
         await GetBase64File();
         StateHasChanged();
-    }
+        }
 
-    async Task GetBase64File()
-    {
+        async Task GetBase64File()
+        {
         byte[] bytes;
         var memoryStream = await file.ReadAllAsync();
         bytes = memoryStream.ToArray();
         obra.ImagemObra = Convert.ToBase64String(bytes);
-    }
+        }
+        #endregion
 }

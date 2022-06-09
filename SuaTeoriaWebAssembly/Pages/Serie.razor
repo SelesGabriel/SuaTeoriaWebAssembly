@@ -1,4 +1,5 @@
 ﻿@page "/series"
+@inject HttpClient http
 
 <div class="container">
     <div class="row">
@@ -6,115 +7,221 @@
             <div class="container">
                 <h2 class="fontePadrao">AS MAIS RECENTES</h2>
                 <div class="dropdown-divider"></div>
+                <nav aria-label="Page navigation example">
+
+                    <ul class="pagination">
+                        @if (skip != 0)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
+                            </li>
+                        }
+                        @if (skip == 0 || Teorias.Count() == 6)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
                 <div class="row">
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-12 py-5">
-                        <a href="#" title="O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND">
-                            <img src="images/imagem.jpg" id="imagemInicio" />
-                            <p id="textoInicio">O ARANHA-VERSO: QUANDO TEREMOS O TOM HOLLAND </p>
-                        </a>
-                    </div>
+                    @if (Teorias != null)
+                    {
+                        @foreach (var item in Teorias)
+                        {
+                            <div class="col-lg-6 col-md-12 py-5">
+                                <a href="visualizarteoria/@item.Id" title="">
+                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
+                                    <p id="textoInicio">@item.Titulo</p>
+                                    <p id="textoInicio">@item.Id</p>
+                                </a>
+                            </div>
+                        }
+                    }
+                    <div class="dropdown-divider"></div>
+                    <nav aria-label="Page navigation example">
+
+                        <ul class="pagination">
+                            @if (skip != 0)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
+                                </li>
+                            }
+                            @if (skip == 0 || Teorias.Count() == 6)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
-                <h4 class="fontePadrao">OS MAIS FALADOS</h4>
-                <div class="row py-2">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
-                    <div class="col-6"><a href="#">ONE PIECE</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row py-2">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
-                    <div class="col-6"><a href="#">ONE PIECE</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
+                <h4 class="fontePadrao">TOP OBRAS</h4>
+                @foreach (var o in ObrasMaisFaladas)
+                {
+                    if (o.Obra != null)
+                    {
+
+                        <div class="dropdown-divider"></div>
+                        <div class="row py-2">
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @o.Obra.ImagemObra" /></a></div>
+                            <div class="col-6"><a href="#">@o.Obra.Nome</a></div>
+                        </div>
+                    }
+                }
+                <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
+                @foreach (var t in TopTeorias)
+                {
+                    <div class="dropdown-divider"></div>
+                    <div class="row py-2">
+                        <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
+                        <div class="col-6"><a href="#">@t.Teoria.Titulo</a></div>
+                    </div>
+                }
+
                 <h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>
-                <div class="row py-2">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/onepiece.png /></a></div>
-                    <div class="col-6"><a href="#">ONE PIECE</a></div>
-                </div>
+                @*  @foreach (var t in TopUsuarios)
+                {
                 <div class="dropdown-divider"></div>
                 <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
+                <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
+                <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
                 </div>
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
+                }*@
             </div>
         </div>
 
+
     </div>
+
 </div>
+
+
+@code {
+    Teoria teoria = new();
+    List<Teoria> Teorias = new();
+    List<TopObra> TopObras = new();
+    List<Usuario> TopUsuarios = new();
+    List<Favorite> Favorites = new();
+    List<Obra> Obras = new();
+    List<ObraMaisFalada> ObrasMaisFaladas = new();
+    List<TopTeoria> TopTeorias = new();
+
+
+
+    IEnumerable<object>? teste;
+
+    #region Pagination
+    int skip;
+
+    #endregion
+
+
+    #region Class GetTop
+    public class TopObra
+    {
+        public int IdObra { get; set; }
+        public int Quantidade { get; set; }
+        public string NomeObra { get; set; }
+        public int IdCategoria { get; set; }
+        public string ImagemObra { get; set; }
+    }
+
+    public class ObraMaisFalada
+    {
+        public Obra Obra { get; set; }
+        public int Quantidade { get; set; }
+    }
+
+    public class TopTeoria
+    {
+        public int IdTeoria { get; set; }
+        public int Quantidade { get; set; }
+        public Teoria Teoria { get; set; }
+    }
+
+    public class TopUsuario
+    {
+        public int MyProperty { get; set; }
+    }
+    #endregion
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await GetTeorias();
+        await GetObras();
+        await GetFavorites();
+        await GetObrasMaisFaladas();
+        await GetTopTeorias();
+        //await GetTopUsuarios();
+    }
+
+    async Task GetTeorias()
+    {
+        skip = 0;
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/2?skip={skip}&take=6");
+    }
+
+    async Task GetObras()
+    {
+        Obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+    }
+
+    async Task GetFavorites()
+    {
+        Favorites = await http.GetFromJsonAsync<List<Favorite>>("http://localhost:5285/curtidas");
+    }
+
+    async Task GetTopObras()
+    {
+        TopObras = await http.GetFromJsonAsync<List<TopObra>>("http://localhost:5285/topobras");
+    }
+
+    async Task GetObrasMaisFaladas()
+    {
+        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("http://localhost:5285/obrasmaisfaladas");
+    }
+
+    async Task GetTopTeorias()
+    {
+        TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("http://localhost:5285/topteorias");
+    }
+
+    async Task GetTopUsuarios()
+    {
+        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285/obrasmaisfaladas");
+    }
+
+    async Task PaginationPrevious()
+    {
+        if (skip == 6)
+        {
+            skip = 0;
+        }
+        else
+        {
+            skip = skip - 6;
+        }
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/2?skip={skip}&take=6");
+    }
+
+    async Task PaginationNext()
+    {
+        if (skip == 0)
+        {
+            skip = 6;
+        }
+        else
+        {
+            skip = skip + 6;
+        }
+
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/2?skip={skip}&take=6");
+    }
+}
