@@ -100,7 +100,6 @@
             
         }*@
         <label>teasasdasdasd</label>
-        <label>@tase</label>
 
     </div>
 
@@ -119,10 +118,7 @@
     List<ObraMaisFalada> ObrasMaisFaladas = new();
     List<TopTeoria> TopTeorias = new();
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationState{ get; set; }
-
-    IEnumerable<object>? teste;
+    
     #endregion
 
     #region Pagination
@@ -160,19 +156,11 @@
     }
     #endregion
 
-    [CascadingParameter]
-    private Task<AuthenticationState> auth{ get; set; }
-    string tase = "";
 
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await auth;
-        var user = authState.User;
-        if (user.Identity.IsAuthenticated)
-        {
-            tase = $"Olá {user.Identity.Name}" ;
-        }
+       
 
 
         await GetTeorias();
