@@ -1,4 +1,6 @@
-﻿@*@inject NavigationManager nav*@
+﻿@inject NavigationManager nav
+@inject Blazored.SessionStorage.ISessionStorageService session
+@inject HttpClient http
 
 
 <EditForm Model="usuario" OnSubmit="Logar">
@@ -15,16 +17,17 @@
                     <form>
                         <div class="form-group">
                             <label for="usuarioLogin" class="col-form-label">Usuario / Email</label>
-                            <input type="text" class="form-control" id="usuarioLogin" placeholder="Usuario ou Email">
+                            <input type="text" class="form-control" id="usuarioLogin" placeholder="Usuario ou Email" @bind-value="usuario.User">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Senha</label>
-                            <input type="password" class="form-control" placeholder="Senha" />
+                            <input type="password" class="form-control" placeholder="Senha" @bind-value="usuario.Senha" />
                         </div>
+                        @errorMessage
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Entrar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -32,10 +35,30 @@
     </div>
 
 </EditForm>
+
 @code {
     private Usuario usuario = new();
-    private async void Logar()
+    private Usuario userLogin = new();
+    private List<Usuario> usuarios = new();
+    string errorMessage = "";
+    public async Task SessionUser(Usuario us)
     {
+        await session.SetItemAsync("SessionUser", us);
+    }
+    private async Task Logar()
+    {
+        usuarios = await http.GetFromJsonAsync<List<Usuario>>($"http://localhost:5285/usuarios");
+        if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+        {
+            userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
+            SessionUser(userLogin);
+            nav.NavigateTo("", true);
+        }
+        else
+        {
+            errorMessage = "Login ou senha inválido.";
+        }
+
         //nav.NavigateTo("");
     }
 }

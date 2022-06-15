@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject HttpClient http
+@inject Blazored.SessionStorage.ISessionStorageService session
 
 <div class="container">
     <div class="row">
@@ -95,19 +96,13 @@
                 }*@
             </div>
         </div>
-        @*@if (TopUsuarios.FirstOrDefault().Nome.IsInRole("Admin"))
-        {
-            
-        }*@
-        <label>teasasdasdasd</label>
+        
 
     </div>
 
 </div>
 
-
 @code {
-    #region variaveis
 
     Teoria teoria = new();
     List<Teoria> Teorias = new();
@@ -118,12 +113,11 @@
     List<ObraMaisFalada> ObrasMaisFaladas = new();
     List<TopTeoria> TopTeorias = new();
 
+    #region session
     
     #endregion
-
     #region Pagination
     int skip;
-
     #endregion
 
 
@@ -160,7 +154,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-       
 
 
         await GetTeorias();
@@ -170,6 +163,8 @@
         await GetTopTeorias();
         //await GetTopUsuarios();
     }
+
+
 
     async Task GetTeorias()
     {

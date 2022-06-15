@@ -1,5 +1,7 @@
 ﻿@inject IJSRuntime js
 @inject HttpClient http
+@inject Blazored.SessionStorage.ISessionStorageService session
+@inject NavigationManager nav
 
 @*NAVIGATION MENU*@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
@@ -50,37 +52,47 @@
                             <span aria-hidden="false"></span> SUA TEORIA
                         </NavLink>
                     </li>
-                    <AuthorizeView Roles="admin">
-                        <Authorized>
-                            <li class="nav-item">
-                                <NavLink class="nav-link" href="painel">
-                                    <span aria-hidden="false"></span> ADM
-                                </NavLink>
-                            </li>
-                        </Authorized>
-                    </AuthorizeView>
+                    @*<AuthorizeView Roles="admin">*@
+                    @*<Authorized>*@
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="painel">
+                            <span aria-hidden="false"></span> ADM
+                        </NavLink>
+                    </li>
+                    @*</Authorized>*@
+                    @*</AuthorizeView>*@
                 </ul>
             </div>
             <div class="col-2 col-lg-2 col-md-2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="fa fa-user"></span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @if (1 != 1)//Usuario logado
-                            {
-                                <a class="dropdown-item text-black">Meu Perfil</a>
+                        @if (!isAnonimo)
+                        {
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-user"></span>
+                                <label>Olá, @userInfo.User</label>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" style="cursor:pointer" href="#">Meu Perfil</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-black">Sair</a>
-                            }
-                            else//usuario deslogado
-                            {
+                                <a class="dropdown-item text-black" style="cursor:pointer" @onclick="ClearSession">Sair</a>
+
+                            </div>
+                        }
+                        else
+                        {
+
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="fa fa-user"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
                                 <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalEntrar">Entrar</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalCriar">Cadastrar</a>
-                            }
-                        </div>
+
+                            </div>
+                        }
                     </li>
                 </ul>
             </div>
@@ -156,9 +168,37 @@
 
 @code {
     Usuario usuario = new();
+
     async Task PostUsuario()
     {
         await http.PostAsJsonAsync<Usuario>("http://localhost:5285/usuarios", usuario);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSessionUser();
+    }
+
+    bool isAnonimo = false;
+    Usuario userInfo = new();
+    Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
+    public async Task GetSessionUser()
+    {
+        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+
+        if (userInfo == null || userInfo.Id == 0)
+        {
+            userInfo = userAnonimo;
+            await session.SetItemAsync("SessionUser", userInfo);
+            isAnonimo = true;
+        }
+    }
+
+    public void ClearSession()
+    {
+        isAnonimo = true;
+        session.ClearAsync();
+        userInfo = new Usuario() { Id = 0, Nome = "Anonimous" };
+        nav.NavigateTo("", true);
+    }
 }
