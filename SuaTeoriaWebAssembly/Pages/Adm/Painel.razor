@@ -19,7 +19,7 @@
         <div class="col-sm-12 my-3">
             <select class="form-select" @bind="obra.IdCategoria">
                 <option value="0">Selecione uma categoria</option>
-                @foreach (var item in categorias)
+                @foreach (var item in criaCategorias)
                 {
                     <option value="@item.Id">@item.Nome.ToUpper()</option>
                 }
@@ -36,69 +36,134 @@
         <thead>
         <th scope="col">Titulo da teoria</th>
         <th scope="col">Nome da nova obra</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Obra</th>
+        <th scope="col">Ação</th>
         </thead>
         <tbody>
-                @foreach (var t in Teorias.Where(x => x.IdObra == -1))
-                {
-                    <tr>
-                        <td>@t.Titulo</td>
-                        <td>@t.NovaObra</td>
-                    </tr>
-                }
+            @foreach (var t in Teorias.Where(x => x.IdObra == -1))
+            {
+                <tr>
+                    <td>@t.Titulo</td>
+                    <td>@t.NovaObra</td>
+                    <td>
+                        <select class="form-select" @bind="teoria.IdCategoria">
+                            <option value="0">Selecione uma categoria</option>
+                            @foreach (var item in criaCategorias)
+                            {
+                                <option value="@item.Id">@item.Nome.ToUpper()</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" @bind="teoria.IdObra">
+                            <option value="0">Selecione uma obra</option>
+                            @foreach (var item in obras)
+                            {
+                                <option value="@item.Id">@item.Nome.ToUpper()</option>
+                            }
+                        </select>
+                    </td>
+                    <td><button @onclick="(()=>PutTeoriaAsync(t.Id))">Salvar</button></td>
+                </tr>
+            }
         </tbody>
     </table>
 
 </div>
 
-    @code {
-        Categoria categoria = new();
-        List<Categoria> categorias = new();
-        List<Teoria> Teorias = new();
-        Obra obra = new();
-        Teoria teoria = new();
-        IFileListEntry? file;
-        string errMessage = "";
+@code {
+    Categoria categoria = new();
+    List<Categoria> criaCategorias = new();
+    List<Categoria> categoriasObras = new();
+    List<Obra> obras = new();
+    List<Teoria> Teorias = new();
+    Obra obra = new();
+    Teoria teoria = new();
+    IFileListEntry? file;
+    string errMessage = "";
 
-        int skip = 0;
-        int take = 50;
+    int skip = 0;
+    int take = 50;
 
 
-        protected override async Task OnInitializedAsync()
-        {
+    protected override async Task OnInitializedAsync()
+    {
         await GetCategoriasAsync();
         await GetTeoriaObraNova();
-        }
+        await GetObrasAsync();
+    }
 
-        async Task PostCategoriaAsync()
+    async Task PostCategoriaAsync()
+    {
+        if (string.IsNullOrEmpty(categoria.Nome))
         {
-
-        await http.PostAsJsonAsync<Categoria>("http://localhost:5285/categorias", categoria);
+            errMessage = "Coloque o nome da categoria";
+            await js.InvokeVoidAsync("alert", errMessage);
         }
-
-        async Task PostObraAsync()
+        else
         {
-        await http.PostAsJsonAsync<Obra>("http://localhost:5285/obras", obra);
+            await http.PostAsJsonAsync<Categoria>("http://localhost:5285/categorias", categoria);
         }
+    }
 
-        async Task GetCategoriasAsync()
+    async Task PutTeoriaAsync(int idTeoria)
+    {
+        if(obra.IdCategoria != 0)
         {
-        categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+            errMessage = "Coloque uma categoria";
+            await js.InvokeVoidAsync("alert", errMessage);
         }
+        await http.PutAsJsonAsync<Teoria>($"http://localhost:5285/teoriaupdate?idTeoria={idTeoria}", teoria);
+    }
 
-        async Task GetTeoriaObraNova()
+    async Task PostObraAsync()
+    {
+        if (obra.IdCategoria == 0)
         {
+            errMessage = "Selecione uma categoria";
+            await js.InvokeVoidAsync("alert", errMessage);
+        }
+        else if (string.IsNullOrEmpty(obra.Nome))
+        {
+            errMessage = "Coloque o nome da obra";
+            await js.InvokeVoidAsync("alert", errMessage);
+        }
+        else if (string.IsNullOrEmpty(obra.ImagemObra))
+        {
+            errMessage = "Coloque uma imagem";
+            await js.InvokeVoidAsync("alert", errMessage);
+        }
+        else
+        {
+            await http.PostAsJsonAsync<Obra>("http://localhost:5285/obras", obra);
+        }
+    }
+
+    async Task GetCategoriasAsync()
+    {
+        criaCategorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+    }
+
+    async Task GetObrasAsync()
+    {
+        obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+    }
+
+    async Task GetTeoriaObraNova()
+    {
         Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take={take}");
 
-        }
+    }
 
-        //async Task AtualizaObraTeoria()
-        //{
-        //    await http.PutAsJsonAsync<Teoria>("http://localhost:5285/teoriaupdate");
-        //}
+    //async Task AtualizaObraTeoria()
+    //{
+    //    await http.PutAsJsonAsync<Teoria>("http://localhost:5285/teoriaupdate");
+    //}
 
-        #region File Select
-        async Task HandleFileSelect(IFileListEntry[] files)
-        {
+    #region File Select
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
         file = files.FirstOrDefault();
         if (file != null)
         {
@@ -112,14 +177,14 @@
         }
         await GetBase64File();
         StateHasChanged();
-        }
+    }
 
-        async Task GetBase64File()
-        {
+    async Task GetBase64File()
+    {
         byte[] bytes;
         var memoryStream = await file.ReadAllAsync();
         bytes = memoryStream.ToArray();
         obra.ImagemObra = Convert.ToBase64String(bytes);
-        }
-        #endregion
+    }
+    #endregion
 }
