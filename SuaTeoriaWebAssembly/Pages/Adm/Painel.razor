@@ -5,6 +5,7 @@
 
 <EditForm Model="categoria" OnSubmit="@PostCategoriaAsync">
     <div class="container">
+        <h2>Adicionar categoria</h2>
         <div class="col-sm-12 my-3">
             <input type="text" placeholder="Nome da categoria" @bind-value="categoria.Nome" />
             <input type="submit" value="Criar Categoria" class="btn-dark btn-md">
@@ -12,10 +13,10 @@
 
     </div>
 </EditForm>
-
+<br />
 <EditForm Model="obra" OnSubmit="@PostObraAsync">
     <div class="container">
-
+        <h2>Adicionar obra</h2>
         <div class="col-sm-12 my-3">
             <select class="form-select" @bind="obra.IdCategoria">
                 <option value="0">Selecione uma categoria</option>
@@ -25,13 +26,16 @@
                 }
             </select>
             <input type="text" placeholder="Nome da obra" @bind-value="obra.Nome" />
-            <BlazorInputFile.InputFile OnChange="HandleFileSelect" id="imagemTitulo"></BlazorInputFile.InputFile>
+            <BlazorInputFile.InputFile OnChange="AdicionaImagemObra" id="imagemTitulo"></BlazorInputFile.InputFile>
             <input type="submit" value="Criar Obra" class="btn-dark btn-md">
         </div>
     </div>
 </EditForm>
+<br />
 @*<EditForm Model="teoria" OnSubmit="@"*@
+
 <div class="container">
+    <h2>Alterar obra não encontrada</h2>
     <table class="table">
         <thead>
         <th scope="col">Titulo da teoria</th>
@@ -71,6 +75,37 @@
     </table>
 
 </div>
+<br />
+
+<EditForm Model="obraAlterar" OnSubmit="UpdateObra">
+
+    <div class="container">
+        <h2>Alterar obra</h2>
+        <select class="form-select" @bind="obraAlterar.Id">
+            <option value="0">Selecione uma obra</option>
+            @foreach (var item in obras)
+            {
+                <option value="@item.Id">@item.Nome.ToUpper()</option>
+            }
+        </select>
+        <label>Alterar imagem:</label>
+        <BlazorInputFile.InputFile OnChange="AtualizaImagemObra" id="imagemTitulo"></BlazorInputFile.InputFile>
+        <br />
+        <label>Alterar </label>
+        <select class="form-select" @bind="obraAlterar.IdCategoria">
+            <option value="0">Selecione uma obra</option>
+            @foreach (var item in criaCategorias)
+            {
+                <option value="@item.Id">@item.Nome.ToUpper()</option>
+            }
+        </select>
+        <br />
+        <label>Alterar nome:</label>
+        <input type="text" @bind-value="obraAlterar.Nome" />
+        <br />
+        <input type="submit" class="btn-dark" value="Enviar" />
+    </div>
+</EditForm>
 
 @code {
     Categoria categoria = new();
@@ -109,7 +144,7 @@
 
     async Task PutTeoriaAsync(int idTeoria)
     {
-        if(obra.IdCategoria != 0)
+        if (obra.IdCategoria != 0)
         {
             errMessage = "Coloque uma categoria";
             await js.InvokeVoidAsync("alert", errMessage);
@@ -156,13 +191,19 @@
 
     }
 
+    Obra obraAlterar = new();
+    async Task UpdateObra()
+    {
+        await http.PutAsJsonAsync<Obra>($"http://localhost:5285/obra/{obraAlterar.Id}", obraAlterar);
+    }
+
     //async Task AtualizaObraTeoria()
     //{
     //    await http.PutAsJsonAsync<Teoria>("http://localhost:5285/teoriaupdate");
     //}
 
     #region File Select
-    async Task HandleFileSelect(IFileListEntry[] files)
+    async Task AdicionaImagemObra(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
         if (file != null)
@@ -175,16 +216,33 @@
             }
 
         }
-        await GetBase64File();
-        StateHasChanged();
-    }
-
-    async Task GetBase64File()
-    {
         byte[] bytes;
         var memoryStream = await file.ReadAllAsync();
         bytes = memoryStream.ToArray();
         obra.ImagemObra = Convert.ToBase64String(bytes);
+        StateHasChanged();
     }
+
+    async Task AtualizaImagemObra(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+
+        }
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        obraAlterar.ImagemObra = Convert.ToBase64String(bytes);
+        StateHasChanged();
+    }
+
+   
     #endregion
 }

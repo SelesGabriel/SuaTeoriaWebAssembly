@@ -1,8 +1,23 @@
 ﻿@page "/visualizarteoria/{IdTeoria:int}"
 @inject HttpClient http
+@inject Blazored.SessionStorage.ISessionStorageService session
 
 <div class="container my-5">
     <input type="image" style="height:50%; width:100%; cursor:default" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+    @if (!isFavorite)
+    {
+        <EditForm Model="favorite" OnSubmit="PostCurtida">
+
+        <button type="submit">CURTIR</button>
+        </EditForm>
+    }
+    else
+    {
+        <EditForm Model="favorite" OnSubmit="DeleteCurtida">
+
+        <button type="submit">CURTIU</button>
+        </EditForm>
+    }
     <div class="col-sm-12 my-3 text-center">
         <h2>@teoria.Titulo</h2>
     </div>
@@ -11,6 +26,10 @@
 
 
 @code {
+    Usuario userInfo = new();
+    Favorite favorite = new();
+    bool isFavorite;
+    List<Favorite> favorites = new();
     Teoria teoria = new Teoria();
     [Parameter]
     public int IdTeoria { get; set; }
@@ -18,11 +37,34 @@
     protected override async Task OnInitializedAsync()
     {
         await GetTeoriaAsync(IdTeoria);
+        await GetCurtidas();
     }
 
     async Task GetTeoriaAsync(int idTeoria)
     {
         teoria = await http.GetFromJsonAsync<Teoria>($"http://localhost:5285/teoria/{idTeoria}");
         conteudo = (MarkupString)teoria.Conteudo;
+    }
+
+    async Task GetCurtidas()
+    {
+        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+        if (userInfo.Nome != "Anonimous")
+        {
+            favorites = await http.GetFromJsonAsync<List<Favorite>>($"http://localhost:5285/curtidas");
+            isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
+        }
+    }
+
+    async Task PostCurtida()
+    {
+        if (!isFavorite)
+            await http.PostAsJsonAsync<Favorite>($"http://localhost:5285/curtidas", favorite);
+    }
+
+    async Task DeleteCurtida()
+    {
+        if (isFavorite)
+            await http.DeleteAsync($"http://localhost:5285/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
     }
 }

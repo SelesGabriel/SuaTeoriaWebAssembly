@@ -62,7 +62,7 @@
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
                 <h4 class="fontePadrao">TOP OBRAS</h4>
-                @foreach (var o in ObrasMaisFaladas)
+                @foreach (var o in ObrasMaisFaladas.Where(x => x.Obra.IdCategoria == 2))
                 {
                     if (o.Obra != null)
                     {
@@ -75,7 +75,7 @@
                     }
                 }
                 <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
-                @foreach (var t in TopTeorias)
+                @foreach (var t in TopTeorias.Where(x => x.Teoria.IdCategoria == 2))
                 {
                     <div class="dropdown-divider"></div>
                     <div class="row py-2">
