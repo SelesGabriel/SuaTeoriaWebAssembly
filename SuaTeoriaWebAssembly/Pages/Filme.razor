@@ -164,37 +164,37 @@
     async Task GetTeorias()
     {
         skip = 0;
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/3?skip={skip}&take=6");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teoriaporcategoria/3?skip={skip}&take=6");
     }
 
     async Task GetObras()
     {
-        Obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+        Obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
     }
 
     async Task GetFavorites()
     {
-        Favorites = await http.GetFromJsonAsync<List<Favorite>>("http://localhost:5285/curtidas");
+        Favorites = await http.GetFromJsonAsync<List<Favorite>>("https://suateoriaapi.azurewebsites.net/curtidas");
     }
 
     async Task GetTopObras()
     {
-        TopObras = await http.GetFromJsonAsync<List<TopObra>>("http://localhost:5285/topobras");
+        TopObras = await http.GetFromJsonAsync<List<TopObra>>("https://suateoriaapi.azurewebsites.net/topobras");
     }
 
     async Task GetObrasMaisFaladas()
     {
-        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("http://localhost:5285/obrasmaisfaladas");
+        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
     }
 
     async Task GetTopTeorias()
     {
-        TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("http://localhost:5285/topteorias");
+        TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("https://suateoriaapi.azurewebsites.net/topteorias");
     }
 
     async Task GetTopUsuarios()
     {
-        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285/obrasmaisfaladas");
+        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
     }
 
     async Task PaginationPrevious()
@@ -207,7 +207,7 @@
         {
             skip = skip - 6;
         }
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/3?skip={skip}&take=6");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teoriaporcategoria/3?skip={skip}&take=6");
     }
 
     async Task PaginationNext()
@@ -221,6 +221,6 @@
             skip = skip + 6;
         }
 
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teoriaporcategoria/3?skip={skip}&take=6");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teoriaporcategoria/3?skip={skip}&take=6");
     }
 }

@@ -138,7 +138,7 @@
         }
         else
         {
-            await http.PostAsJsonAsync<Categoria>("http://localhost:5285/categorias", categoria);
+            await http.PostAsJsonAsync<Categoria>("https://suateoriaapi.azurewebsites.net/categorias", categoria);
         }
     }
 
@@ -149,7 +149,7 @@
             errMessage = "Coloque uma categoria";
             await js.InvokeVoidAsync("alert", errMessage);
         }
-        await http.PutAsJsonAsync<Teoria>($"http://localhost:5285/teoriaupdate?idTeoria={idTeoria}", teoria);
+        await http.PutAsJsonAsync<Teoria>($"https://suateoriaapi.azurewebsites.net/teoriaupdate?idTeoria={idTeoria}", teoria);
     }
 
     async Task PostObraAsync()
@@ -171,35 +171,35 @@
         }
         else
         {
-            await http.PostAsJsonAsync<Obra>("http://localhost:5285/obras", obra);
+            await http.PostAsJsonAsync<Obra>("https://suateoriaapi.azurewebsites.net/obras", obra);
         }
     }
 
     async Task GetCategoriasAsync()
     {
-        criaCategorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+        criaCategorias = await http.GetFromJsonAsync<List<Categoria>>("https://suateoriaapi.azurewebsites.net/categorias");
     }
 
     async Task GetObrasAsync()
     {
-        obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+        obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
     }
 
     async Task GetTeoriaObraNova()
     {
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take={take}");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take={take}");
 
     }
 
     Obra obraAlterar = new();
     async Task UpdateObra()
     {
-        await http.PutAsJsonAsync<Obra>($"http://localhost:5285/obra/{obraAlterar.Id}", obraAlterar);
+        await http.PutAsJsonAsync<Obra>($"https://suateoriaapi.azurewebsites.net/obra/{obraAlterar.Id}", obraAlterar);
     }
 
     //async Task AtualizaObraTeoria()
     //{
-    //    await http.PutAsJsonAsync<Teoria>("http://localhost:5285/teoriaupdate");
+    //    await http.PutAsJsonAsync<Teoria>("https://suateoriaapi.azurewebsites.net/teoriaupdate");
     //}
 
     #region File Select

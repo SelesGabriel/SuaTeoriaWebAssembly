@@ -133,12 +133,12 @@
 
     async Task GetCategoriaAsync()
     {
-        categorias = await http.GetFromJsonAsync<List<Categoria>>("http://localhost:5285/categorias");
+        categorias = await http.GetFromJsonAsync<List<Categoria>>("https://suateoriaapi.azurewebsites.net/categorias");
     }
 
     async Task GetObrasAsync()
     {
-        obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+        obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
     }
 
     async Task PostTeoriaAsync()
@@ -174,7 +174,7 @@
                 await js.InvokeVoidAsync("alert", errMessage);
             }
             else
-                await http.PostAsJsonAsync<Teoria>("http://localhost:5285/teoria", teoria);
+                await http.PostAsJsonAsync<Teoria>("https://suateoriaapi.azurewebsites.net/teoria", teoria);
         }
         catch (Exception errMessage)
         {

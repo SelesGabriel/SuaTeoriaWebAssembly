@@ -88,20 +88,20 @@
 
     async Task GetTopObras()
     {
-        maisFalados = await http.GetFromJsonAsync<List<TopObras>>("http://localhost:5285/topobras");
+        maisFalados = await http.GetFromJsonAsync<List<TopObras>>("https://suateoriaapi.azurewebsites.net/topobras");
     }
     async Task GetTeorias()
     {
-        teorias = await http.GetFromJsonAsync<List<Teoria>>("http://localhost:5285/teorias");
+        teorias = await http.GetFromJsonAsync<List<Teoria>>("https://suateoriaapi.azurewebsites.net/teorias");
     }
 
     async Task GetTopTeorias()
     {
-        topTeorias = await http.GetFromJsonAsync<List<TopTeorias>>("http://localhost:5285/topteorias");
+        topTeorias = await http.GetFromJsonAsync<List<TopTeorias>>("https://suateoriaapi.azurewebsites.net/topteorias");
     }
 
     async Task GetTopUsuarios()
     {
-        //topUsuarios = await http.GetFromJsonAsync<List<TopUsuarios>>("http://localhost:5285/topusuarios");
+        //topUsuarios = await http.GetFromJsonAsync<List<TopUsuarios>>("https://suateoriaapi.azurewebsites.net/topusuarios");
     }
 }

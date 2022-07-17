@@ -179,7 +179,7 @@
 
     async Task PostUsuario()
     {
-        await http.PostAsJsonAsync<Usuario>("http://localhost:5285/usuarios", usuario);
+        await http.PostAsJsonAsync<Usuario>("https://suateoriaapi.azurewebsites.net/usuarios", usuario);
     }
 
     protected override async Task OnInitializedAsync()

@@ -47,7 +47,7 @@
     }
     private async Task Logar()
     {
-        usuarios = await http.GetFromJsonAsync<List<Usuario>>($"http://localhost:5285/usuarios");
+        usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
         if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
         {
             userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);

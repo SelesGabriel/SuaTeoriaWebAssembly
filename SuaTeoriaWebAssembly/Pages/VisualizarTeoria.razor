@@ -42,7 +42,7 @@
 
     async Task GetTeoriaAsync(int idTeoria)
     {
-        teoria = await http.GetFromJsonAsync<Teoria>($"http://localhost:5285/teoria/{idTeoria}");
+        teoria = await http.GetFromJsonAsync<Teoria>($"https://suateoriaapi.azurewebsites.net/teoria/{idTeoria}");
         conteudo = (MarkupString)teoria.Conteudo;
     }
 
@@ -51,7 +51,7 @@
         userInfo = await session.GetItemAsync<Usuario>("SessionUser");
         if (userInfo.Nome != "Anonimous")
         {
-            favorites = await http.GetFromJsonAsync<List<Favorite>>($"http://localhost:5285/curtidas");
+            favorites = await http.GetFromJsonAsync<List<Favorite>>($"https://suateoriaapi.azurewebsites.net/curtidas");
             isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
         }
     }
@@ -59,12 +59,12 @@
     async Task PostCurtida()
     {
         if (!isFavorite)
-            await http.PostAsJsonAsync<Favorite>($"http://localhost:5285/curtidas", favorite);
+            await http.PostAsJsonAsync<Favorite>($"https://suateoriaapi.azurewebsites.net/curtidas", favorite);
     }
 
     async Task DeleteCurtida()
     {
         if (isFavorite)
-            await http.DeleteAsync($"http://localhost:5285/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
+            await http.DeleteAsync($"https://suateoriaapi.azurewebsites.net/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
     }
 }
