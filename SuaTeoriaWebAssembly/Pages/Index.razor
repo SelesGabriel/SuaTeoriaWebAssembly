@@ -11,38 +11,9 @@
                 <nav aria-label="Page navigation example">
 
                     <ul class="pagination">
-                        @if (skip != 0)
+                        @if (Teorias != null)
                         {
-                            <li class="page-item">
-                                <a class="page-link" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
-                            </li>
-                        }
-                        @if (skip == 0 || Teorias.Count() == 6)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-                <div class="row">
-                    @if (Teorias != null)
-                    {
-                        @foreach (var item in Teorias)
-                        {
-                            <div class="col-lg-6 col-md-12 py-5">
-                                <a href="visualizarteoria/@item.Id" title="">
-                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
-                                    <p id="textoInicio">@item.Titulo</p>
-                                    <p id="textoInicio">@item.Id</p>
-                                </a>
-                            </div>
-                        }
-                    }
-                    <div class="dropdown-divider"></div>
-                    <nav aria-label="Page navigation example">
 
-                        <ul class="pagination">
                             @if (skip != 0)
                             {
                                 <li class="page-item">
@@ -55,6 +26,41 @@
                                     <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
                                 </li>
                             }
+                        }
+                    </ul>
+                </nav>
+                <div class="row">
+                    @if (Teorias != null)
+                    {
+                        @foreach (var item in Teorias)
+                        {
+                            <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
+                                <a href="visualizarteoria/@item.Id" title="">
+                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
+                                    <p id="textoInicio">@item.Titulo</p>
+                                </a>
+                            </div>
+                        }
+                    }
+                    <div class="dropdown-divider"></div>
+                    <nav aria-label="Page navigation example">
+
+                        <ul class="pagination">
+                            @if (Teorias != null)
+                            {
+                                @if (skip != 0)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
+                                    </li>
+                                }
+                                @if (skip == 0 || Teorias.Count() == 6)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
+                                    </li>
+                                }
+                            }
                         </ul>
                     </nav>
                 </div>
@@ -62,30 +68,36 @@
         </div>
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
-                <h4 class="fontePadrao">TOP OBRAS</h4>
-                @foreach (var o in ObrasMaisFaladas)
+                <h4 class="fontePadrao">MAIS FALADAS</h4>
+                @if (ObrasMaisFaladas == null)
                 {
-                    if (o.Obra != null)
+                }
+                else
+                {
+                    for (var o = 0; o < ObrasMaisFaladas.Count && o <= 10; o++)
                     {
+                        if (ObrasMaisFaladas[o].Obra != null)
+                        {
 
-                        <div class="dropdown-divider"></div>
-                        <div class="row py-2">
-                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @o.Obra.ImagemObra" /></a></div>
-                            <div class="col-6"><a href="#">@o.Obra.Nome</a></div>
-                        </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row py-2">
+                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" /></a></div>
+                                <div class="col-6"><label style="text-decoration:none;"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
+                            </div>
+                        }
                     }
                 }
-                <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
+                @* <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
                 @foreach (var t in TopTeorias)
                 {
-                    <div class="dropdown-divider"></div>
-                    <div class="row py-2">
-                        <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
-                        <div class="col-6"><a href="#">@t.Teoria.Titulo</a></div>
-                    </div>
-                }
+                <div class="dropdown-divider"></div>
+                <div class="row py-2">
+                <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
+                <div class="col-6"><a href="#">@t.Teoria.Titulo</a></div>
+                </div>
+                }*@
 
-                <h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>
+                @*<h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>*@
                 @*  @foreach (var t in TopUsuarios)
                 {
                 <div class="dropdown-divider"></div>
@@ -96,7 +108,7 @@
                 }*@
             </div>
         </div>
-        
+
 
     </div>
 
@@ -104,17 +116,17 @@
 
 @code {
 
-    Teoria teoria = new();
-    List<Teoria> Teorias = new();
-    List<TopObra> TopObras = new();
-    List<Usuario> TopUsuarios = new();
-    List<Favorite> Favorites = new();
-    List<Obra> Obras = new();
-    List<ObraMaisFalada> ObrasMaisFaladas = new();
-    List<TopTeoria> TopTeorias = new();
+    Teoria? teoria = new();
+    List<Teoria?>? Teorias = new();
+    List<TopObra?>? TopObras = new();
+    List<Usuario?>? TopUsuarios = new();
+    List<Favorite?>? Favorites = new();
+    List<Obra?>? Obras = new();
+    List<ObraMaisFalada?>? ObrasMaisFaladas = new();
+    List<TopTeoria?>? TopTeorias = new();
 
     #region session
-    
+
     #endregion
     #region Pagination
     int skip;
@@ -158,9 +170,9 @@
 
         await GetTeorias();
         await GetObras();
-        await GetFavorites();
         await GetObrasMaisFaladas();
-        await GetTopTeorias();
+        //await GetFavorites();
+        //await GetTopTeorias();
         //await GetTopUsuarios();
     }
 
@@ -169,37 +181,37 @@
     async Task GetTeorias()
     {
         skip = 0;
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take=6");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
     }
 
     async Task GetObras()
     {
-        Obras = await http.GetFromJsonAsync<List<Obra>>("http://localhost:5285/obras");
+        Obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
     }
 
     async Task GetFavorites()
     {
-        Favorites = await http.GetFromJsonAsync<List<Favorite>>("http://localhost:5285/curtidas");
+        Favorites = await http.GetFromJsonAsync<List<Favorite>>("https://suateoriaapi.azurewebsites.net/curtidas");
     }
 
     async Task GetTopObras()
     {
-        TopObras = await http.GetFromJsonAsync<List<TopObra>>("http://localhost:5285/topobras");
+        TopObras = await http.GetFromJsonAsync<List<TopObra>>("https://suateoriaapi.azurewebsites.net/topobras");
     }
 
     async Task GetObrasMaisFaladas()
     {
-        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("http://localhost:5285/obrasmaisfaladas");
+        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
     }
 
     async Task GetTopTeorias()
     {
-        //TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("http://localhost:5285/topteorias");
+        //TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("https://suateoriaapi.azurewebsites.net/topteorias");
     }
 
     async Task GetTopUsuarios()
     {
-        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("http://localhost:5285/obrasmaisfaladas");
+        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
     }
 
     async Task PaginationPrevious()
@@ -212,7 +224,8 @@
         {
             skip = skip - 6;
         }
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take=6");
+        if (Teorias != null)
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
     }
 
     async Task PaginationNext()
@@ -225,7 +238,7 @@
         {
             skip = skip + 6;
         }
-
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"http://localhost:5285/teorias?skip={skip}&take=6");
+        if (Teorias != null)
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
     }
 }

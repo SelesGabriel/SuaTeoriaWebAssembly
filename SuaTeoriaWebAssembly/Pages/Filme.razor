@@ -29,7 +29,7 @@
                     {
                         @foreach (var item in Teorias)
                         {
-                            <div class="col-lg-6 col-md-12 py-5">
+                            <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
                                 <a href="visualizarteoria/@item.Id" title="">
                                     <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
                                     <p id="textoInicio">@item.Titulo</p>
@@ -60,7 +60,7 @@
         </div>
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
-                <h4 class="fontePadrao">TOP OBRAS</h4>
+                <h4 class="fontePadrao">MAIS FALADAS</h4>
                 @foreach (var o in ObrasMaisFaladas.Where(x =>x.Obra.Id == 3))
                 {
                     if (o.Obra != null)
@@ -68,12 +68,12 @@
 
                         <div class="dropdown-divider"></div>
                         <div class="row py-2">
-                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @o.Obra.ImagemObra" /></a></div>
-                            <div class="col-6"><a href="#">@o.Obra.Nome</a></div>
+                            <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @o.Obra.ImagemObra" /></a></div>
+                            <div class="col-6"><label href="#">@o.Obra.Nome</label></div>
                         </div>
                     }
                 }
-                <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
+                @*<h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
                 @foreach (var t in TopTeorias.Where(x => x.Teoria.IdCategoria == 3))
                 {
                     <div class="dropdown-divider"></div>
@@ -81,9 +81,9 @@
                         <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
                         <div class="col-6"><a href="#">@t.Teoria.Titulo</a></div>
                     </div>
-                }
+                }*@
 
-                <h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>
+                @*<h4 class="fontePadrao mt-5">TOP TEORISTAS</h4>*@
                 @*  @foreach (var t in TopUsuarios)
                 {
                 <div class="dropdown-divider"></div>
@@ -155,9 +155,9 @@
 
         await GetTeorias();
         await GetObras();
-        await GetFavorites();
         await GetObrasMaisFaladas();
-        await GetTopTeorias();
+        //await GetFavorites();
+        //await GetTopTeorias();
         //await GetTopUsuarios();
     }
 

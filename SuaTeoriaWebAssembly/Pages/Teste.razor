@@ -1,0 +1,19 @@
+﻿@page "/teste"
+@inject IJSRuntime js
+
+<select class="form-control selectpicker" id="select-country" data-live-search="true">
+    <option data-tokens="china">China</option>
+    <option data-tokens="malayasia">Malayasia</option>
+    <option data-tokens="singapore">Singapore</option>
+</select>
+
+
+<h3>Teste</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await js.InvokeVoidAsync("teste");
+        //await js.InvokeVoidAsync("searchSelect");
+    }
+}

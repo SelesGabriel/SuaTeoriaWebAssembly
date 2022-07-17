@@ -73,6 +73,13 @@ a, .btn-link {
     width: 100%;
 }
 
+#divTeoria {
+    overflow: hidden;
+    height: 300px;
+    width: 100%;
+}
+
+
 #textoInicio {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -91,10 +98,39 @@ a {
     text-decoration-line: underline;
 }
 
-#menuLateralImg {
-    width: 100%;
-    height: 100%;
+@media(min-width:1200px) {
+    #menuLateralImg {
+        width: 100px;
+        height: 75px;
+    }
 }
+
+@media(min-width:577px) and (max-width:1199px) {
+
+    #menuLateralImg {
+        width: 75px;
+        height: 50px;
+    }
+}
+
+@media(max-width:576px) {
+    #menuLateralImg {
+        width: 150px;
+        height: 100px;
+    }
+
+    .py-2 div > a {
+        float:right
+    }
+}
+
+div > a{
+    color:black;
+    box-shadow:none;
+}
+
+
+
 
 .fontePadrao {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
@@ -110,12 +146,13 @@ a {
     font-size: 2.5em;
     width: 100%;
     outline: 0px solid transparent;
-    border:none;
+    border: none;
 }
 
 .divEditorTeoria {
-    min-height:300px;
+    min-height: 300px;
 }
+
 [contenteditable] {
     outline: 0px solid transparent;
 }
