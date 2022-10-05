@@ -10,24 +10,7 @@
                 <div class="dropdown-divider"></div>
                 <nav aria-label="Page navigation example">
 
-                    <ul class="pagination">
-                        @if (Teorias != null)
-                        {
-
-                            @if (skip != 0)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
-                                </li>
-                            }
-                            @if (skip == 0 || Teorias.Count() == 6)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" style="cursor:default" @onclick="PaginationNext">Próximo</a>
-                                </li>
-                            }
-                        }
-                    </ul>
+                   
                 </nav>
                 <div class="row">
                     @if (Teorias != null)
@@ -69,7 +52,7 @@
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
                 <h4 class="fontePadrao">MAIS FALADAS</h4>
-                @if (ObrasMaisFaladas == null)
+                @*@if (ObrasMaisFaladas == null)
                 {
                 }
                 else
@@ -86,7 +69,7 @@
                             </div>
                         }
                     }
-                }
+                }*@
                 @* <h4 class="fontePadrao mt-5">TOP TEORIAS</h4>
                 @foreach (var t in TopTeorias)
                 {
@@ -112,6 +95,7 @@
 
     </div>
 
+
 </div>
 
 @code {
@@ -124,6 +108,8 @@
     List<Obra?>? Obras = new();
     List<ObraMaisFalada?>? ObrasMaisFaladas = new();
     List<TopTeoria?>? TopTeorias = new();
+    //string baseUrl = "http://localhost:5285";
+    string baseUrl = "https://suateoriaapi.azurewebsites.net";
 
     #region session
 
@@ -169,8 +155,8 @@
 
 
         await GetTeorias();
-        await GetObras();
-        await GetObrasMaisFaladas();
+        //await GetObras();
+        //await GetObrasMaisFaladas();
         //await GetFavorites();
         //await GetTopTeorias();
         //await GetTopUsuarios();
@@ -181,37 +167,37 @@
     async Task GetTeorias()
     {
         skip = 0;
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
     }
 
     async Task GetObras()
     {
-        Obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
+        Obras = await http.GetFromJsonAsync<List<Obra>>($"{baseUrl}/obras");
     }
 
     async Task GetFavorites()
     {
-        Favorites = await http.GetFromJsonAsync<List<Favorite>>("https://suateoriaapi.azurewebsites.net/curtidas");
+        Favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
     }
 
     async Task GetTopObras()
     {
-        TopObras = await http.GetFromJsonAsync<List<TopObra>>("https://suateoriaapi.azurewebsites.net/topobras");
+        TopObras = await http.GetFromJsonAsync<List<TopObra>>($"{baseUrl}/topobras");
     }
 
     async Task GetObrasMaisFaladas()
     {
-        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
+        ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>($"{baseUrl}/obrasmaisfaladas");
     }
 
     async Task GetTopTeorias()
     {
-        //TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("https://suateoriaapi.azurewebsites.net/topteorias");
+        //TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("{baseUrl}/topteorias");
     }
 
     async Task GetTopUsuarios()
     {
-        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("https://suateoriaapi.azurewebsites.net/obrasmaisfaladas");
+        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("{baseUrl}/obrasmaisfaladas");
     }
 
     async Task PaginationPrevious()
@@ -225,7 +211,7 @@
             skip = skip - 6;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
     }
 
     async Task PaginationNext()
@@ -239,6 +225,6 @@
             skip = skip + 6;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take=6");
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
     }
 }

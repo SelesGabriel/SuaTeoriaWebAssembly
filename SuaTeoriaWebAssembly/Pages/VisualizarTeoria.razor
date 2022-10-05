@@ -8,14 +8,14 @@
     {
         <EditForm Model="favorite" OnSubmit="PostCurtida">
 
-        <button type="submit">CURTIR</button>
+            <button type="submit">CURTIR</button>
         </EditForm>
     }
     else
     {
         <EditForm Model="favorite" OnSubmit="DeleteCurtida">
 
-        <button type="submit">CURTIU</button>
+            <button type="submit">CURTIU</button>
         </EditForm>
     }
     <div class="col-sm-12 my-3 text-center">
@@ -34,15 +34,17 @@
     [Parameter]
     public int IdTeoria { get; set; }
     MarkupString conteudo;
+    string baseUrl = "https://suateoriaapi.azurewebsites.net";
+    //string baseUrl = "http://localhost:5285";
     protected override async Task OnInitializedAsync()
     {
         await GetTeoriaAsync(IdTeoria);
-        await GetCurtidas();
+        //await GetCurtidas();
     }
 
     async Task GetTeoriaAsync(int idTeoria)
     {
-        teoria = await http.GetFromJsonAsync<Teoria>($"https://suateoriaapi.azurewebsites.net/teoria/{idTeoria}");
+        teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
         conteudo = (MarkupString)teoria.Conteudo;
     }
 
@@ -51,7 +53,7 @@
         userInfo = await session.GetItemAsync<Usuario>("SessionUser");
         if (userInfo.Nome != "Anonimous")
         {
-            favorites = await http.GetFromJsonAsync<List<Favorite>>($"https://suateoriaapi.azurewebsites.net/curtidas");
+            favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
             isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
         }
     }
@@ -59,12 +61,12 @@
     async Task PostCurtida()
     {
         if (!isFavorite)
-            await http.PostAsJsonAsync<Favorite>($"https://suateoriaapi.azurewebsites.net/curtidas", favorite);
+            await http.PostAsJsonAsync<Favorite>($"{baseUrl}/curtidas", favorite);
     }
 
     async Task DeleteCurtida()
     {
         if (isFavorite)
-            await http.DeleteAsync($"https://suateoriaapi.azurewebsites.net/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
+            await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
     }
 }

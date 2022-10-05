@@ -84,7 +84,8 @@
 
     int idCategoria;
     int valorNaoEncontrei;
-
+    //string baseUrl = "http:localhost:5285";
+    string baseUrl = "https://suateoriaapi.azurewebsites.net";
 
     List<Categoria> categorias = new();
     Categoria categoria = new();
@@ -133,12 +134,12 @@
 
     async Task GetCategoriaAsync()
     {
-        categorias = await http.GetFromJsonAsync<List<Categoria>>("https://suateoriaapi.azurewebsites.net/categorias");
+        categorias = await http.GetFromJsonAsync<List<Categoria>>($"{baseUrl}/categorias");
     }
 
     async Task GetObrasAsync()
     {
-        obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
+        obras = await http.GetFromJsonAsync<List<Obra>>($"{baseUrl}/obras");
     }
 
     async Task PostTeoriaAsync()
@@ -174,7 +175,7 @@
                 await js.InvokeVoidAsync("alert", errMessage);
             }
             else
-                await http.PostAsJsonAsync<Teoria>("https://suateoriaapi.azurewebsites.net/teoria", teoria);
+                await http.PostAsJsonAsync<Teoria>($"{baseUrl}/teoria", teoria);
         }
         catch (Exception errMessage)
         {
