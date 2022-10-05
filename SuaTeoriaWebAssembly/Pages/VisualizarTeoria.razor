@@ -48,15 +48,15 @@
         conteudo = (MarkupString)teoria.Conteudo;
     }
 
-    async Task GetCurtidas()
-    {
-        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
-        if (userInfo.Nome != "Anonimous")
-        {
-            favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
-            isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
-        }
-    }
+    //async Task GetCurtidas()
+    //{
+    //    userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+    //    if (userInfo.Nome != "Anonimous")
+    //    {
+    //        favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
+    //        isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
+    //    }
+    //}
 
     async Task PostCurtida()
     {
