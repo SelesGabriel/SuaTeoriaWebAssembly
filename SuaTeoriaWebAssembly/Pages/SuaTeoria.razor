@@ -2,6 +2,7 @@
 @inject IJSRuntime js
 @inject HttpClient http
 @inject NavigationManager nav
+<div style="background:white; border:outset;border-radius:120px;">
 
 <EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
     <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -56,10 +57,60 @@
                 <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
             }
         </div>
-        <div class="my-3">
-            <CriaTextoTeoria></CriaTextoTeoria>
-        </div>
     </div>
+    <!-- #region Criacao texto -->
+    <div class="my-3 container">
+        <BlazoredTextEditor @ref="@QuillHtml">
+            <ToolbarContent>
+                <span class="ql-formats">
+                    <select class="ql-font">
+                        <option selected=""></option>
+                        <option value="serif"></option>
+                        <option value="monospace"></option>
+                    </select>
+                </span>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link"></button>
+                    <button class="ql-image"></button>
+                </span>
+            </ToolbarContent>
+            <EditorContent>
+                <label>Comece a criar sua teoria aqui :)</label>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </EditorContent>
+        </BlazoredTextEditor>
+    </div>
+    <!-- #endregion -->
     <div class="text-center my-4 py-5">
         <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
     </div>
@@ -68,8 +119,13 @@
 </EditForm>
 
 
+</div>
 
 @code {
+    string QuillHTMLContent;
+    string QuillContent;
+    BlazoredTextEditor QuillHtml;
+    BlazoredTextEditor QuillNative;
     IFileListEntry? file;
     string errMessage = "";
     string mensagem = "Escolha uma imagem para ser capa da sua teoria";
@@ -77,10 +133,6 @@
     public string htmlText { get; set; } = "";
     string input = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"><!--!--><input type=\"file\" _bl_2=\"\"></div>";
     string dragDropZone = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"></div>";
-    //string largura1 = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
-    //string largura = "<input type=\"range\" min=\"4\" max=\"99\" \">";
-    //string altura1 = "<input class=\"tamanhoImagem\" type=\"number\" min=\"4\" max=\"100\" b-zuc3isr0wf=\"\">";
-    //string altura = "<input type=\"range\" min=\"4\" max=\"99\" b-zuc3isr0wf=\"\"";
 
     int idCategoria;
     int valorNaoEncontrei;
@@ -144,8 +196,10 @@
 
     async Task PostTeoriaAsync()
     {
-        htmlText = await js.InvokeAsync<string>("getHtml");
+        //htmlText = await js.InvokeAsync<string>("getHtml");
+        htmlText = await this.QuillHtml.GetHTML();
         //htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
+        //teoria.Conteudo = htmlText;
         teoria.Conteudo = htmlText;
         try
         {
