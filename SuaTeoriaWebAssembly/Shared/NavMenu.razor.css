@@ -52,8 +52,9 @@
 }*/
 
 .nav-item {
-    font-size: 0.9rem;
+    font-size: 1.15rem;
     padding-bottom: 0.5rem;
+    color: white;
 }
 
     .nav-item ::deep a.active {

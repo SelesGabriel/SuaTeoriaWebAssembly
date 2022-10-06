@@ -3,6 +3,10 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-image: url('images/cool-background (1).png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 main {
