@@ -8,20 +8,23 @@
     {
         <EditForm Model="favorite" OnSubmit="PostCurtida">
 
-            <button type="submit">CURTIR</button>
+            <button type="submit" class="mt-2 btn btn-dark">CURTIR</button>
         </EditForm>
     }
     else
     {
         <EditForm Model="favorite" OnSubmit="DeleteCurtida">
 
-            <button type="submit">CURTIU</button>
+            <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
         </EditForm>
     }
-    <div class="col-sm-12 my-3 text-center">
+    <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
     </div>
+    <div style="color:white">
+
     @conteudo
+    </div>
 </div>
 
 
