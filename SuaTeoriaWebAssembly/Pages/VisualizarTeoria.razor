@@ -1,20 +1,19 @@
 ﻿@page "/visualizarteoria/{IdTeoria:int}"
 @inject HttpClient http
 @inject Blazored.SessionStorage.ISessionStorageService session
+@inject IJSRuntime js
 
 <div class="container my-5">
     <input type="image" style="height:50%; width:100%; cursor:default" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
     @if (!isFavorite)
     {
         <EditForm Model="favorite" OnSubmit="PostCurtida">
-
             <button type="submit" class="mt-2 btn btn-dark">CURTIR</button>
         </EditForm>
     }
     else
     {
         <EditForm Model="favorite" OnSubmit="DeleteCurtida">
-
             <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
         </EditForm>
     }
@@ -23,7 +22,7 @@
     </div>
     <div style="color:white">
 
-    @conteudo
+        @conteudo
     </div>
 </div>
 
@@ -37,12 +36,11 @@
     [Parameter]
     public int IdTeoria { get; set; }
     MarkupString conteudo;
-    string baseUrl = "https://suateoriaapi.azurewebsites.net";
-    //string baseUrl = "http://localhost:5285";
+    string baseUrl = Configuration.BaseUrl;
     protected override async Task OnInitializedAsync()
     {
         await GetTeoriaAsync(IdTeoria);
-        //await GetCurtidas();
+        await GetCurtidas();
     }
 
     async Task GetTeoriaAsync(int idTeoria)
@@ -51,25 +49,48 @@
         conteudo = (MarkupString)teoria.Conteudo;
     }
 
-    //async Task GetCurtidas()
-    //{
-    //    userInfo = await session.GetItemAsync<Usuario>("SessionUser");
-    //    if (userInfo.Nome != "Anonimous")
-    //    {
-    //        favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
-    //        isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && teoria.IdUsuario == userInfo.Id).Any();
-    //    }
-    //}
+    async Task GetCurtidas()
+    {
+        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+        if (userInfo.Nome != "Anonimous")
+        {
+            favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
+            isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && x.IdUsuario == userInfo.Id).Any();
+        }
+    }
 
     async Task PostCurtida()
     {
-        if (!isFavorite)
+        favorite = new Favorite
+        {
+            Date = DateTime.Now,
+            IdCategoria = teoria.IdCategoria,
+            IdObra = teoria.IdObra,
+            IdTeoria = teoria.Id,
+            IdUsuario = userInfo.Id
+        };
+        if (userInfo.Nome == "Anonimous")
+        {
+            await js.InvokeVoidAsync("alert", "você precisa estar logado.");
+        }
+        else
+        {
             await http.PostAsJsonAsync<Favorite>($"{baseUrl}/curtidas", favorite);
+        }
+        await GetCurtidas();
     }
 
     async Task DeleteCurtida()
     {
-        if (isFavorite)
-            await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria=0&idUsuario=0&idObra=0&idCategoria=0");
+        favorite = new Favorite
+        {
+            IdCategoria = teoria.IdCategoria,
+            IdObra = teoria.IdObra,
+            IdTeoria = teoria.Id,
+            IdUsuario = userInfo.Id
+        };
+        await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria={favorite.IdTeoria}&idUsuario={favorite.IdUsuario}&idObra={favorite.IdObra}&idCategoria={favorite.IdCategoria}");
+
+        await GetCurtidas();
     }
 }
