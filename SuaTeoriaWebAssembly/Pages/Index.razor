@@ -19,7 +19,7 @@
                         {
                             <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
                                 <a href="visualizarteoria/@item.Id" title="">
-                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" />
+                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px"/>
                                     <p style="color:#d3d3d3">@item.Titulo</p>
                                 </a>
                             </div>
@@ -63,7 +63,7 @@
 
                             <div class="dropdown-divider"></div>
                             <div class="row py-2">
-                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" /></a></div>
+                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px"/></a></div>
                                 <div class="col-6"><label style="text-decoration:none;color:#d3d3d3 "> @ObrasMaisFaladas[o].Obra.Nome</label></div>
                             </div>
                         }
@@ -79,15 +79,15 @@
                     </div>
                 }
 
-                <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
-                @* @foreach (var t in TopUsuarios)
-                {*@
+                @*<h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
+                @foreach (var t in TopUsuarios)
+                {
                 <div class="dropdown-divider"></div>
                 <div class="row">
                     <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
                     <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
                 </div>
-                @*}*@
+                }*@
             </div>
         </div>
 
@@ -107,8 +107,7 @@
     List<Obra?>? Obras = new();
     List<ObraMaisFalada?>? ObrasMaisFaladas = new();
     List<TopTeoria?>? TopTeorias = new();
-    //string baseUrl = "http://localhost:5285";
-    string baseUrl = "https://suateoriaapi.azurewebsites.net";
+    string baseUrl = Configuration.BaseUrl;
 
     #region session
 
@@ -151,8 +150,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
-
         await GetTeorias();
         //await GetObras();
         await GetObrasMaisFaladas();
