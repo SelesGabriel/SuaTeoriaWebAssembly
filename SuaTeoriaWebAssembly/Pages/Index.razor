@@ -19,7 +19,7 @@
                         {
                             <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
                                 <a href="visualizarteoria/@item.Id" title="">
-                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px"/>
+                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
                                     <p style="color:#d3d3d3">@item.Titulo</p>
                                 </a>
                             </div>
@@ -63,8 +63,8 @@
 
                             <div class="dropdown-divider"></div>
                             <div class="row py-2">
-                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px"/></a></div>
-                                <div class="col-6"><label style="text-decoration:none;color:#d3d3d3 "> @ObrasMaisFaladas[o].Obra.Nome</label></div>
+                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
+                                <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
                             </div>
                         }
                     }
@@ -74,20 +74,27 @@
                 {
                     <div class="dropdown-divider"></div>
                     <div class="row py-2">
-                        <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
-                        <div class="col-6"><a href="#">@t.Teoria.Titulo</a></div>
+                        <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
+                        <div class="col-6"><a href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
                     </div>
                 }
 
-                @*<h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
+                <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
                 @foreach (var t in TopUsuarios)
                 {
-                <div class="dropdown-divider"></div>
-                <div class="row">
-                    <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/kimetsu.png /></a></div>
-                    <div class="col-6"><a href="#">KIMETSU NO YAIBA</a></div>
-                </div>
-                }*@
+                    <div class="dropdown-divider"></div>
+                    <div class="row">
+                        @if (!String.IsNullOrEmpty(t.Usuario.Foto))
+                        {
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Usuario.Foto" /></a></div>
+                        }
+                        else
+                        {
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png /></a></div>
+                        }
+                        <div class="col-6"><a href="#" style="text-decoration:none;color:#d3d3d3">@t.Usuario.User</a></div>
+                    </div>
+                }
             </div>
         </div>
 
@@ -102,7 +109,7 @@
     Teoria? teoria = new();
     List<Teoria?>? Teorias = new();
     List<TopObra?>? TopObras = new();
-    List<Usuario?>? TopUsuarios = new();
+    List<TopUsuario?>? TopUsuarios = new();
     List<Favorite?>? Favorites = new();
     List<Obra?>? Obras = new();
     List<ObraMaisFalada?>? ObrasMaisFaladas = new();
@@ -115,8 +122,6 @@
     #region Pagination
     int skip;
     #endregion
-
-
     #region Class GetTop
     public class TopObra
     {
@@ -139,11 +144,6 @@
         public int Quantidade { get; set; }
         public Teoria Teoria { get; set; }
     }
-
-    public class TopUsuario
-    {
-        public int MyProperty { get; set; }
-    }
     #endregion
 
 
@@ -152,10 +152,10 @@
     {
         await GetTeorias();
         //await GetObras();
-        await GetObrasMaisFaladas();
+        //await GetObrasMaisFaladas();
         //await GetFavorites();
-        await GetTopTeorias();
-        await GetTopUsuarios();
+        //await GetTopTeorias();
+        //await GetTopUsuarios();
     }
 
 
@@ -188,12 +188,12 @@
 
     async Task GetTopTeorias()
     {
-        //TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>("{baseUrl}/topteorias");
+        TopTeorias = await http.GetFromJsonAsync<List<TopTeoria>>($"{baseUrl}/topteorias");
     }
 
     async Task GetTopUsuarios()
     {
-        //TopUsuarios = await http.GetFromJsonAsync<List<Usuario>>("{baseUrl}/obrasmaisfaladas");
+        TopUsuarios = await http.GetFromJsonAsync<List<TopUsuario>>($"{baseUrl}/topusuarios");
     }
 
     async Task PaginationPrevious()
