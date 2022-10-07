@@ -48,17 +48,21 @@
     private async Task Logar()
     {
         usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
-        if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+        if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
         {
-            userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
-            SessionUser(userLogin);
-            nav.NavigateTo("", true);
-        }
-        else
-        {
-            errorMessage = "Login ou senha inválido.";
+            if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+            {
+                userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
+                SessionUser(userLogin);
+                nav.NavigateTo("", true);
+            }
+            else
+                errorMessage = "Login ou senha inválido.";
         }
 
-        //nav.NavigateTo("");
+        else
+            errorMessage = "Usuario não existe, cadastre-se.";
+
+        //nav.NavigateTo("",true);
     }
 }

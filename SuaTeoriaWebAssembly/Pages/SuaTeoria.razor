@@ -130,14 +130,10 @@
     string errMessage = "";
     string mensagem = "Escolha uma imagem para ser capa da sua teoria";
     int count = 1;
-    public string htmlText { get; set; } = "";
-    string input = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"><!--!--><input type=\"file\" _bl_2=\"\"></div>";
-    string dragDropZone = "<div class=\"drag-drop-zone\" b-zuc3isr0wf=\"\"></div>";
 
     int idCategoria;
     int valorNaoEncontrei;
-    //string baseUrl = "http:localhost:5285";
-    string baseUrl = "https://suateoriaapi.azurewebsites.net";
+    string baseUrl = Configuration.BaseUrl;
 
     List<Categoria> categorias = new();
     Categoria categoria = new();
