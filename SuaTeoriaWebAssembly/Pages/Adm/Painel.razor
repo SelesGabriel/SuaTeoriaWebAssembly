@@ -5,7 +5,7 @@
 
 <EditForm Model="categoria" OnSubmit="@PostCategoriaAsync">
     <div class="container">
-        <h2>Adicionar categoria</h2>
+        <h2  style="color:#d3d3d3">Adicionar categoria</h2>
         <div class="col-sm-12 my-3">
             <input type="text" placeholder="Nome da categoria" @bind-value="categoria.Nome" />
             <input type="submit" value="Criar Categoria" class="btn-dark btn-md">
@@ -16,7 +16,7 @@
 <br />
 <EditForm Model="obra" OnSubmit="@PostObraAsync">
     <div class="container">
-        <h2>Adicionar obra</h2>
+        <h2  style="color:#d3d3d3">Adicionar obra</h2>
         <div class="col-sm-12 my-3">
             <select class="form-select" @bind="obra.IdCategoria">
                 <option value="0">Selecione uma categoria</option>
@@ -35,21 +35,21 @@
 @*<EditForm Model="teoria" OnSubmit="@"*@
 
 <div class="container">
-    <h2>Alterar obra não encontrada</h2>
+    <h2  style="color:#d3d3d3">Alterar obra não encontrada</h2>
     <table class="table">
         <thead>
-        <th scope="col">Titulo da teoria</th>
-        <th scope="col">Nome da nova obra</th>
-        <th scope="col">Categoria</th>
-        <th scope="col">Obra</th>
-        <th scope="col">Ação</th>
+        <th style="color:#d3d3d3" scope="col">Titulo da teoria</th>
+        <th style="color:#d3d3d3" scope="col">Nome da nova obra</th>
+        <th style="color:#d3d3d3" scope="col">Categoria</th>
+        <th style="color:#d3d3d3" scope="col">Obra</th>
+        <th style="color:#d3d3d3" scope="col">Ação</th>
         </thead>
         <tbody>
             @foreach (var t in Teorias.Where(x => x.IdObra == -1))
             {
                 <tr>
-                    <td>@t.Titulo</td>
-                    <td>@t.NovaObra</td>
+                    <td style="color:#d3d3d3">@t.Titulo</td>
+                    <td style="color:#d3d3d3">@t.NovaObra</td>
                     <td>
                         <select class="form-select" @bind="teoria.IdCategoria">
                             <option value="0">Selecione uma categoria</option>
@@ -80,7 +80,7 @@
 <EditForm Model="obraAlterar" OnSubmit="UpdateObra">
 
     <div class="container">
-        <h2>Alterar obra</h2>
+        <h2 style="color:#d3d3d3">Alterar obra</h2>
         <select class="form-select" @bind="obraAlterar.Id">
             <option value="0">Selecione uma obra</option>
             @foreach (var item in obras)
@@ -88,10 +88,10 @@
                 <option value="@item.Id">@item.Nome.ToUpper()</option>
             }
         </select>
-        <label>Alterar imagem:</label>
+        <label style="color:#d3d3d3">Alterar imagem:</label>
         <BlazorInputFile.InputFile OnChange="AtualizaImagemObra" id="imagemTitulo"></BlazorInputFile.InputFile>
         <br />
-        <label>Alterar </label>
+        <label style="color:#d3d3d3">Alterar </label>
         <select class="form-select" @bind="obraAlterar.IdCategoria">
             <option value="0">Selecione uma obra</option>
             @foreach (var item in criaCategorias)
@@ -100,7 +100,7 @@
             }
         </select>
         <br />
-        <label>Alterar nome:</label>
+        <label style="color:#d3d3d3">Alterar nome:</label>
         <input type="text" @bind-value="obraAlterar.Nome" />
         <br />
         <input type="submit" class="btn-dark" value="Enviar" />
@@ -117,6 +117,7 @@
     Teoria teoria = new();
     IFileListEntry? file;
     string errMessage = "";
+    string baseUrl = Configuration.BaseUrl;
 
     int skip = 0;
     int take = 50;
@@ -138,7 +139,7 @@
         }
         else
         {
-            await http.PostAsJsonAsync<Categoria>("https://suateoriaapi.azurewebsites.net/categorias", categoria);
+            await http.PostAsJsonAsync<Categoria>($"{baseUrl}/categorias", categoria);
         }
     }
 
@@ -149,7 +150,8 @@
             errMessage = "Coloque uma categoria";
             await js.InvokeVoidAsync("alert", errMessage);
         }
-        await http.PutAsJsonAsync<Teoria>($"https://suateoriaapi.azurewebsites.net/teoriaupdate?idTeoria={idTeoria}", teoria);
+        await http.PutAsJsonAsync<Teoria>($"{baseUrl}/teoriaupdate?idTeoria={idTeoria}", teoria);
+        nav.NavigateTo("painel", true);
     }
 
     async Task PostObraAsync()
@@ -171,37 +173,39 @@
         }
         else
         {
-            await http.PostAsJsonAsync<Obra>("https://suateoriaapi.azurewebsites.net/obras", obra);
+            await http.PostAsJsonAsync<Obra>($"{baseUrl}/obras", obra);
+            nav.NavigateTo("painel", true);
         }
     }
 
     async Task GetCategoriasAsync()
     {
-        criaCategorias = await http.GetFromJsonAsync<List<Categoria>>("https://suateoriaapi.azurewebsites.net/categorias");
+        criaCategorias = await http.GetFromJsonAsync<List<Categoria>>($"{baseUrl}/categorias");
     }
 
     async Task GetObrasAsync()
     {
-        obras = await http.GetFromJsonAsync<List<Obra>>("https://suateoriaapi.azurewebsites.net/obras");
+        obras = await http.GetFromJsonAsync<List<Obra>>($"{baseUrl}/obras");
     }
 
     async Task GetTeoriaObraNova()
     {
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"https://suateoriaapi.azurewebsites.net/teorias?skip={skip}&take={take}");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}");
 
     }
 
     Obra obraAlterar = new();
     async Task UpdateObra()
     {
-        await http.PutAsJsonAsync<Obra>($"https://suateoriaapi.azurewebsites.net/obra/{obraAlterar.Id}", obraAlterar);
+        await http.PutAsJsonAsync<Obra>($"{baseUrl}/obra/{obraAlterar.Id}", obraAlterar);
     }
 
     //async Task AtualizaObraTeoria()
     //{
-    //    await http.PutAsJsonAsync<Teoria>("https://suateoriaapi.azurewebsites.net/teoriaupdate");
+    //    await http.PutAsJsonAsync<Teoria>($"{baseUrl}/teoriaupdate");
     //}
 
+    //File Select
     #region File Select
     async Task AdicionaImagemObra(IFileListEntry[] files)
     {

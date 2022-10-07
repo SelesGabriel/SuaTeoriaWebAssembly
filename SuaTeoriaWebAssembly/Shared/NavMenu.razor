@@ -176,10 +176,12 @@
 
 @code {
     Usuario usuario = new();
-
+    string baseUrl = Configuration.BaseUrl;
     async Task PostUsuario()
     {
-        await http.PostAsJsonAsync<Usuario>("https://suateoriaapi.azurewebsites.net/usuarios", usuario);
+        await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
+        js.InvokeVoidAsync("alert", "Cadastado com sucesso");
+        nav.NavigateTo("", true);
     }
 
     protected override async Task OnInitializedAsync()

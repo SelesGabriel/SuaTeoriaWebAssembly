@@ -13,17 +13,14 @@
 
                 </nav>
                 <div class="row">
-                    @if (Teorias != null)
+                    @foreach (var item in Teorias)
                     {
-                        @foreach (var item in Teorias)
-                        {
-                            <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
-                                <a href="visualizarteoria/@item.Id" title="">
-                                    <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
-                                    <p style="color:#d3d3d3">@item.Titulo</p>
-                                </a>
-                            </div>
-                        }
+                        <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
+                            <a href="visualizarteoria/@item.Id" title="">
+                                <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
+                                <p style="color:#d3d3d3">@item.Titulo</p>
+                            </a>
+                        </div>
                     }
                     <div class="dropdown-divider"></div>
                     <nav aria-label="Page navigation example">
@@ -32,12 +29,12 @@
 
                             @if (Teorias != null)
                             {
-                                @if (skip != 0)
+                                if (skip != 0)
                                 {
                                     <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
 
                                 }
-                                @if (skip == 0 || Teorias.Count() == 6)
+                                if (skip == 0 || Teorias.Count() == 6)
                                 {
                                     <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext">Próximo</a>
 
@@ -51,31 +48,27 @@
         <div class="col-lg-4 col-md-5 col-sm-6">
             <div class="container">
                 <h4 class="fontePadrao" style="color:#d3d3d3;">MAIS FALADAS</h4>
-                @if (ObrasMaisFaladas == null)
-                {
-                }
-                else
-                {
-                    for (var o = 0; o < ObrasMaisFaladas.Count && o <= 10; o++)
-                    {
-                        if (ObrasMaisFaladas[o].Obra != null)
-                        {
 
-                            <div class="dropdown-divider"></div>
-                            <div class="row py-2">
-                                <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
-                                <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
-                            </div>
-                        }
+                @for (var o = 0; o < ObrasMaisFaladas.Count; o++)
+                {
+                    if (ObrasMaisFaladas[o].Obra != null)
+                    {
+
+                        <div class="dropdown-divider"></div>
+                        <div class="row py-2">
+                            <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
+                            <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
+                        </div>
                     }
                 }
+
                 <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORIAS</h4>
                 @foreach (var t in TopTeorias)
                 {
                     <div class="dropdown-divider"></div>
-                    <div class="row py-2">
+                    <div class="row py-2" style="overflow:hidden;max-height:10vh;">
                         <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
-                        <div class="col-6"><a href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
+                        <div class="col-6"><a title="@t.Teoria.Titulo" href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
                     </div>
                 }
 
@@ -108,19 +101,14 @@
 
     Teoria? teoria = new();
     List<Teoria?>? Teorias = new();
-    List<TopObra?>? TopObras = new();
     List<TopUsuario?>? TopUsuarios = new();
-    List<Favorite?>? Favorites = new();
-    List<Obra?>? Obras = new();
     List<ObraMaisFalada?>? ObrasMaisFaladas = new();
     List<TopTeoria?>? TopTeorias = new();
     string baseUrl = Configuration.BaseUrl;
 
-    #region session
-
-    #endregion
     #region Pagination
     int skip;
+    int take = 8;
     #endregion
     #region Class GetTop
     public class TopObra
@@ -151,39 +139,21 @@
     protected override async Task OnInitializedAsync()
     {
         await GetTeorias();
-        //await GetObras();
-        //await GetObrasMaisFaladas();
-        //await GetFavorites();
-        //await GetTopTeorias();
-        //await GetTopUsuarios();
+        await GetObrasMaisFaladas();
+        await GetTopTeorias();
+        await GetTopUsuarios();
     }
-
-
 
     async Task GetTeorias()
     {
         skip = 0;
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
-    }
-
-    async Task GetObras()
-    {
-        Obras = await http.GetFromJsonAsync<List<Obra>>($"{baseUrl}/obras");
-    }
-
-    async Task GetFavorites()
-    {
-        Favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
-    }
-
-    async Task GetTopObras()
-    {
-        TopObras = await http.GetFromJsonAsync<List<TopObra>>($"{baseUrl}/topobras");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}");
     }
 
     async Task GetObrasMaisFaladas()
     {
         ObrasMaisFaladas = await http.GetFromJsonAsync<List<ObraMaisFalada>>($"{baseUrl}/obrasmaisfaladas");
+
     }
 
     async Task GetTopTeorias()
@@ -196,31 +166,33 @@
         TopUsuarios = await http.GetFromJsonAsync<List<TopUsuario>>($"{baseUrl}/topusuarios");
     }
 
+    #region Pagination
     async Task PaginationPrevious()
     {
-        if (skip == 6)
+        if (skip == 8)
         {
             skip = 0;
         }
         else
         {
-            skip = skip - 6;
+            skip = skip - 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}");
     }
 
     async Task PaginationNext()
     {
         if (skip == 0)
         {
-            skip = 6;
+            skip = 8;
         }
         else
         {
-            skip = skip + 6;
+            skip = skip + 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take=6");
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}");
     }
+    #endregion
 }
