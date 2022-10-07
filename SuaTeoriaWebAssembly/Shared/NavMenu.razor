@@ -71,7 +71,7 @@
             
 
             @*Usuario*@
-           @* <div class="col-2 col-lg-2 col-md-2">
+            <div class="col-2 col-lg-2 col-md-2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         @if (!isAnonimo)
@@ -103,7 +103,7 @@
                         }
                     </li>
                 </ul>
-            </div>*@
+            </div>
 
         </div>
 
@@ -184,7 +184,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //await GetSessionUser();
+        await GetSessionUser();
     }
 
     bool isAnonimo = false;
