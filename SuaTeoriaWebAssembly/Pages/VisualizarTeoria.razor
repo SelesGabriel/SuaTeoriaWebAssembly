@@ -20,7 +20,7 @@
     <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
     </div>
-    <div style="color:white">
+    <div style="color:white;">
 
         @conteudo
     </div>
@@ -46,7 +46,7 @@
     async Task GetTeoriaAsync(int idTeoria)
     {
         teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
-        conteudo = (MarkupString)teoria.Conteudo;
+        conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=","<img style=max-width:100% src=");
     }
 
     async Task GetCurtidas()

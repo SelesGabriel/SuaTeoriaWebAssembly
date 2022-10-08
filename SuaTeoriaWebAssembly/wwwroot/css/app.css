@@ -79,6 +79,11 @@ a, .btn-link {
     width: 100%;
 }
 
+#imagemConteudo{
+    max-height:100%;
+    max-width:100%;
+}
+
 
 #textoInicio {
     overflow: hidden;
