@@ -17,6 +17,7 @@
             <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
         </EditForm>
     }
+    <div>@usuarioSemFoto.Id</div>
     <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
     </div>
@@ -29,6 +30,7 @@
 
 @code {
     Usuario userInfo = new();
+    Usuario usuarioSemFoto = new();
     Favorite favorite = new();
     bool isFavorite;
     List<Favorite> favorites = new();
@@ -41,12 +43,18 @@
     {
         await GetTeoriaAsync(IdTeoria);
         await GetCurtidas();
+        await GetUsuarioSemFoto(IdTeoria);
     }
 
     async Task GetTeoriaAsync(int idTeoria)
     {
         teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
         conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=","<img style=max-width:100% src=");
+    }
+
+    async Task GetUsuarioSemFoto(int idUsuario)
+    {
+        usuarioSemFoto = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuariosemfoto?idUsuario={teoria.IdUsuario}");
     }
 
     async Task GetCurtidas()
