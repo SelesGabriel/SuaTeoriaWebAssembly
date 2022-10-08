@@ -2,121 +2,124 @@
 @inject IJSRuntime js
 @inject HttpClient http
 @inject NavigationManager nav
+@inject Blazored.SessionStorage.ISessionStorageService session
+
+
 <div style="background:white; border:outset;border-radius:120px;">
 
-<EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
 
-    <div class="container">
-        <div class=row>
-            <div class="col-sm-12 my-3">
-                <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." @bind-value="teoria.Titulo" />
-            </div>
-            <div class="col-md-6 col-sm-12">
+        <div class="container">
+            <div class=row>
+                <div class="col-sm-12 my-3">
+                    <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." @bind-value="teoria.Titulo" />
+                </div>
+                <div class="col-md-6 col-sm-12">
 
-                <select class="form-select" @bind="teoria.IdCategoria">
-                    <option value="0">Selecione uma categoria</option>
-                    @foreach (var item in categorias)
-                    {
-                        <option value="@item.Id">@item.Nome.ToUpper()</option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <select class="form-select" @bind="teoria.IdObra">
-                    <option value="0">Selecione um título</option>
-                    @if (teoria.IdCategoria >= 1)
-                    {
-                        @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o => o.Nome))
+                    <select class="form-select" @bind="teoria.IdCategoria">
+                        <option value="0">Selecione uma categoria</option>
+                        @foreach (var item in categorias)
                         {
                             <option value="@item.Id">@item.Nome.ToUpper()</option>
                         }
-                        <option value="-1">Não encontrei</option>
-                    }
-                </select>
-            </div>
-            @if (teoria.IdObra == -1)
-            {
-                <div class="my-3 text-center col-4"></div>
-                <div class="my-3 text-center col-4">
-                    <label>Qual você deseja adicionar?</label>
-                    <input type="text" class="form-control" @bind-value="teoria.NovaObra" />
-                </div>
-                <div class="my-3 text-center col-4"></div>
-            }
-        </div>
-        <div class="my-3">
-            <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile>
-            <label for="imagemTitulo"
-                   style="background-color:#ccc;width:100%;
-            border-radius:5px;cursor:pointer;padding:10px;text-align:center">
-                Clique aqui para escolher uma imagem para ser capa da sua teoria &#187
-            </label>
-            @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
-            {
-                <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
-            }
-        </div>
-    </div>
-    <!-- #region Criacao texto -->
-    <div class="my-3 container">
-        <BlazoredTextEditor @ref="@QuillHtml">
-            <ToolbarContent>
-                <span class="ql-formats">
-                    <select class="ql-font">
-                        <option selected=""></option>
-                        <option value="serif"></option>
-                        <option value="monospace"></option>
                     </select>
-                </span>
-                <select class="ql-header">
-                    <option selected=""></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                </select>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-link"></button>
-                    <button class="ql-image"></button>
-                </span>
-            </ToolbarContent>
-            <EditorContent>
-                <label>Comece a criar sua teoria aqui :)</label>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-            </EditorContent>
-        </BlazoredTextEditor>
-    </div>
-    <!-- #endregion -->
-    <div class="text-center my-4 py-5">
-        <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
-    </div>
-    @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <select class="form-select" @bind="teoria.IdObra">
+                        <option value="0">Selecione um título</option>
+                        @if (teoria.IdCategoria >= 1)
+                        {
+                            @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o => o.Nome))
+                            {
+                                <option value="@item.Id">@item.Nome.ToUpper()</option>
+                            }
+                            <option value="-1">Não encontrei</option>
+                        }
+                    </select>
+                </div>
+                @if (teoria.IdObra == -1)
+                {
+                    <div class="my-3 text-center col-4"></div>
+                    <div class="my-3 text-center col-4">
+                        <label>Qual você deseja adicionar?</label>
+                        <input type="text" class="form-control" @bind-value="teoria.NovaObra" />
+                    </div>
+                    <div class="my-3 text-center col-4"></div>
+                }
+            </div>
+            <div class="my-3">
+                <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile>
+                <label for="imagemTitulo"
+                       style="background-color:#ccc;width:100%;
+            border-radius:5px;cursor:pointer;padding:10px;text-align:center">
+                    Clique aqui para escolher uma imagem para ser capa da sua teoria &#187
+                </label>
+                @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
+                {
+                    <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+                }
+            </div>
+        </div>
+        <!-- #region Criacao texto -->
+        <div class="my-3 container">
+            <BlazoredTextEditor @ref="@QuillHtml">
+                <ToolbarContent>
+                    <span class="ql-formats">
+                        <select class="ql-font">
+                            <option selected=""></option>
+                            <option value="serif"></option>
+                            <option value="monospace"></option>
+                        </select>
+                    </span>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                        <button class="ql-image"></button>
+                    </span>
+                </ToolbarContent>
+                <EditorContent>
+                    <label>Comece a criar sua teoria aqui :)</label>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                </EditorContent>
+            </BlazoredTextEditor>
+        </div>
+        <!-- #endregion -->
+        <div class="text-center my-4 py-5">
+            <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
+        </div>
+        @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
 
-</EditForm>
+    </EditForm>
 
 
 </div>
@@ -143,10 +146,11 @@
 
     Teoria teoria = new();
 
-
+    Usuario userInfo = new();
 
     protected override async Task OnInitializedAsync()
     {
+        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
         //await js.InvokeVoidAsync("teste");
         await GetObrasAsync();
         await GetCategoriaAsync();
@@ -200,7 +204,12 @@
         teoria.Conteudo = htmlText;
         try
         {
-            if (string.IsNullOrEmpty(teoria.Titulo))
+            if (userInfo.Nome == "Anonimous")
+            {
+                errMessage = "você precisa estar logado.";
+                await js.InvokeVoidAsync("alert", errMessage);
+            }
+            else if (string.IsNullOrEmpty(teoria.Titulo))
             {
                 errMessage = "Coloque um título ppara sua teoria";
                 await js.InvokeVoidAsync("alert", errMessage);
