@@ -51,6 +51,21 @@
     <!-- #region DropDown login -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- #endregion -->
+    <script src="https://unpkg.com/quill-image-compress@1.2.11/dist/quill.imageCompressor.min.js"></script>
+    <script>
+        Quill.register("modules/imageCompressor", imageCompressor);
+
+        var quill = new Quill("#editor", {
+            modules: {
+                imageCompressor: {
+                    quality: 0.1,
+                    maxWidth: 1000, // default
+                    maxHeight: 1000, // default
+                    imageType: 'image/jpeg'
+                }
+            }
+        });
+    </script>
     <!-- #region Footer -->
     <footer class="text-center text-lg-start text-muted bg-black">
         <div class="text-center p-4">

@@ -235,7 +235,10 @@
                 await js.InvokeVoidAsync("alert", errMessage);
             }
             else
+            {
+                teoria.IdUsuario = userInfo.Id;
                 await http.PostAsJsonAsync<Teoria>($"{baseUrl}/teoria", teoria);
+            }
         }
         catch (Exception errMessage)
         {
