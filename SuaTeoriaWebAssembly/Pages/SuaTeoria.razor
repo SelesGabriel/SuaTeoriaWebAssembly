@@ -1,4 +1,5 @@
 ﻿@page "/suateoria"
+@using SuaTeoriaWebAssembly.Pages.Adm
 @inject IJSRuntime js
 @inject HttpClient http
 @inject NavigationManager nav
@@ -49,8 +50,8 @@
                 }
             </div>
             <div class="my-3">
-                <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTitulo"></BlazorInputFile.InputFile>
-                <label for="imagemTitulo"
+                <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTituloSuaTeoria"></BlazorInputFile.InputFile>
+                <label for="imagemTituloSuaTeoria"
                        style="background-color:#ccc;width:100%;
             border-radius:5px;cursor:pointer;padding:10px;text-align:center">
                     Clique aqui para escolher uma imagem para ser capa da sua teoria &#187
@@ -63,61 +64,74 @@
         </div>
         <!-- #region Criacao texto -->
         <div class="my-3 container">
-            <BlazoredTextEditor @ref="@QuillHtml">
-                <ToolbarContent>
-                    <span class="ql-formats">
-                        <select class="ql-font">
-                            <option selected=""></option>
-                            <option value="serif"></option>
-                            <option value="monospace"></option>
-                        </select>
-                    </span>
-                    <select class="ql-header">
-                        <option selected=""></option>
-                        <option value="1"></option>
-                        <option value="2"></option>
-                        <option value="3"></option>
-                        <option value="4"></option>
-                        <option value="5"></option>
-                    </select>
-                    <span class="ql-formats">
-                        <button class="ql-bold"></button>
-                        <button class="ql-italic"></button>
-                        <button class="ql-underline"></button>
-                        <button class="ql-strike"></button>
-                    </span>
-                    <span class="ql-formats">
-                        <select class="ql-color"></select>
-                        <select class="ql-background"></select>
-                    </span>
-                    <span class="ql-formats">
-                        <button class="ql-list" value="ordered"></button>
-                        <button class="ql-list" value="bullet"></button>
-                    </span>
-                    <span class="ql-formats">
-                        <button class="ql-link"></button>
-                        <button class="ql-image"></button>
-                    </span>
-                </ToolbarContent>
-                <EditorContent>
-                    <label>Comece a criar sua teoria aqui :)</label>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                </EditorContent>
-            </BlazoredTextEditor>
+        <BlazoredTextEditor @ref="@QuillHtml">
+        <ToolbarContent>
+        <span class="ql-formats">
+        <select class="ql-font">
+        <option selected=""></option>
+        <option value="serif"></option>
+        <option value="monospace"></option>
+        </select>
+        </span>
+        <select class="ql-header">
+        <option selected=""></option>
+        <option value="1"></option>
+        <option value="2"></option>
+        <option value="3"></option>
+        <option value="4"></option>
+        <option value="5"></option>
+        </select>
+        <span class="ql-formats">
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-underline"></button>
+        <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+        <select class="ql-color"></select>
+        <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+        <button class="ql-link"></button>
+        <button class="ql-image"></button>
+        </span>
+        </ToolbarContent>
+        <EditorContent>
+        <label>Comece a criar sua teoria aqui :)</label>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        </EditorContent>
+        </BlazoredTextEditor>
         </div>
         <!-- #endregion -->
+        @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
+
+       @* <div class="my-3">
+            
+            @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
+            {
+                <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+            }
+        </div>
+        <div class="my-3 container">
+            <CriaTextoTeoria></CriaTextoTeoria>
+        </div>*@
+
+
         <div class="text-center my-4 py-5">
             <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
         </div>
-        @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
 
     </EditForm>
 
@@ -201,6 +215,7 @@
         htmlText = await this.QuillHtml.GetHTML();
         //htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
         //teoria.Conteudo = htmlText;
+        //var teste = await js.InvokeAsync<string>("buscaImagem",htmlText);
         teoria.Conteudo = htmlText;
         try
         {

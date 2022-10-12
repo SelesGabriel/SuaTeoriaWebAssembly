@@ -4,20 +4,24 @@
 @inject IJSRuntime js
 
 <div class="container my-5">
-    <input type="image" style="height:50%; width:100%; cursor:default" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
-    @if (!isFavorite)
-    {
-        <EditForm Model="favorite" OnSubmit="PostCurtida">
-            <button type="submit" class="mt-2 btn btn-dark">CURTIR</button>
-        </EditForm>
-    }
-    else
-    {
-        <EditForm Model="favorite" OnSubmit="DeleteCurtida">
-            <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
-        </EditForm>
-    }
-    <div>@usuarioSemFoto.Id</div>
+    <input type="image" style="height:50%; width:100%; cursor:default" src="@teoria.ImagemTitulo" />
+    <div class="row">
+
+        @if (!isFavorite)
+        {
+            <EditForm Model="favorite" OnSubmit="PostCurtida">
+                <button type="submit" class="mt-2 btn btn-dark">CURTIR</button>
+            </EditForm>
+        }
+        else
+        {
+            <EditForm Model="favorite" OnSubmit="DeleteCurtida">
+                <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
+            </EditForm>
+        }
+
+        <div style="color:white;">Criado por: <b>@usuario.User</b></div>
+    </div>
     <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
     </div>
@@ -30,7 +34,7 @@
 
 @code {
     Usuario userInfo = new();
-    Usuario usuarioSemFoto = new();
+    Usuario usuario = new();
     Favorite favorite = new();
     bool isFavorite;
     List<Favorite> favorites = new();
@@ -43,18 +47,18 @@
     {
         await GetTeoriaAsync(IdTeoria);
         await GetCurtidas();
-        //await GetUsuarioSemFoto(IdTeoria);
+        await GetUsuario();
+    }
+
+    async Task GetUsuario()
+    {
+        usuario = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{teoria.IdUsuario}");
     }
 
     async Task GetTeoriaAsync(int idTeoria)
     {
         teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
-        conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=","<img style=max-width:100% src=");
-    }
-
-    async Task GetUsuarioSemFoto(int idUsuario)
-    {
-        usuarioSemFoto = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuariosemfoto?idUsuario={teoria.IdUsuario}");
+        conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=", "<img style=max-width:100% src=");
     }
 
     async Task GetCurtidas()
@@ -70,13 +74,13 @@
     async Task PostCurtida()
     {
         favorite = new Favorite
-        {
-            Date = DateTime.Now,
-            IdCategoria = teoria.IdCategoria,
-            IdObra = teoria.IdObra,
-            IdTeoria = teoria.Id,
-            IdUsuario = userInfo.Id
-        };
+            {
+                Date = DateTime.Now,
+                IdCategoria = teoria.IdCategoria,
+                IdObra = teoria.IdObra,
+                IdTeoria = teoria.Id,
+                IdUsuario = userInfo.Id
+            };
         if (userInfo.Nome == "Anonimous")
         {
             await js.InvokeVoidAsync("alert", "você precisa estar logado.");
@@ -91,12 +95,12 @@
     async Task DeleteCurtida()
     {
         favorite = new Favorite
-        {
-            IdCategoria = teoria.IdCategoria,
-            IdObra = teoria.IdObra,
-            IdTeoria = teoria.Id,
-            IdUsuario = userInfo.Id
-        };
+            {
+                IdCategoria = teoria.IdCategoria,
+                IdObra = teoria.IdObra,
+                IdTeoria = teoria.Id,
+                IdUsuario = userInfo.Id
+            };
         await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria={favorite.IdTeoria}&idUsuario={favorite.IdUsuario}&idObra={favorite.IdObra}&idCategoria={favorite.IdCategoria}");
 
         await GetCurtidas();

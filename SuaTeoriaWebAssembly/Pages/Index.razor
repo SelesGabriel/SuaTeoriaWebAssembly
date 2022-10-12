@@ -17,7 +17,7 @@
                     {
                         <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
                             <a href="visualizarteoria/@item.Id" title="">
-                                <img src="data:image/jpeg;base64, @item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
+                                <img src="@item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
                                 <p style="color:#d3d3d3">@item.Titulo</p>
                             </a>
                         </div>
@@ -56,7 +56,7 @@
 
                         <div class="dropdown-divider"></div>
                         <div class="row py-2">
-                            <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="data:image/jpeg;base64, @ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
+                            <div class="col-4"><a class="disabled"><img id="menuLateralImg" src="@ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
                             <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
                         </div>
                     }
@@ -67,7 +67,7 @@
                 {
                     <div class="dropdown-divider"></div>
                     <div class="row py-2" style="overflow:hidden;max-height:10vh;">
-                        <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Teoria.ImagemTitulo" /></a></div>
+                        <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="@t.Teoria.ImagemTitulo" /></a></div>
                         <div class="col-6"><a title="@t.Teoria.Titulo" href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
                     </div>
                 }
@@ -141,7 +141,7 @@
         await GetTeorias();
         await GetObrasMaisFaladas();
         await GetTopTeorias();
-        await GetTopUsuarios();
+        //await GetTopUsuarios();
     }
 
     async Task GetTeorias()
