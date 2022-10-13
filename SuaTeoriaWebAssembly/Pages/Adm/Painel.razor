@@ -40,6 +40,7 @@
         <thead>
         <th style="color:#d3d3d3" scope="col">Titulo da teoria</th>
         <th style="color:#d3d3d3" scope="col">Nome da nova obra</th>
+        <th style="color:#d3d3d3" scope="col">categoria selecionada</th>
         <th style="color:#d3d3d3" scope="col">Categoria</th>
         <th style="color:#d3d3d3" scope="col">Obra</th>
         <th style="color:#d3d3d3" scope="col">Ação</th>
@@ -50,6 +51,7 @@
                 <tr>
                     <td style="color:#d3d3d3">@t.Titulo</td>
                     <td style="color:#d3d3d3">@t.NovaObra</td>
+                    <td style="color:#d3d3d3">@criaCategorias.First(x=>x.Id == t.IdCategoria).Nome</td>
                     <td>
                         <select class="form-select" @bind="teoria.IdCategoria">
                             <option value="0">Selecione uma categoria</option>
@@ -191,7 +193,7 @@
 
     async Task GetTeoriaObraNova()
     {
-        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}");
+        Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}&idCategoria=0");
 
     }
 

@@ -1,6 +1,6 @@
 {
-  "name": "SuaTeoriaWebAssembly",
-  "short_name": "SuaTeoriaWebAssembly",
+  "name": "Sua Teoria",
+  "short_name": "Sua Teoria",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
