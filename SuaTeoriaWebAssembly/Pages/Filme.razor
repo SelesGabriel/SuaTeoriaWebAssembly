@@ -68,7 +68,7 @@
                 {
                     <div class="dropdown-divider"></div>
                     <div class="row py-2" style="overflow:hidden;max-height:10vh;">
-                        <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="@t.Teoria.ImagemTitulo" /></a></div>
+                        <div class="col-4"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="@t.Teoria.ImagemTitulo" style="border-radius:10px" /></a></div>
                         <div class="col-6"><a title="@t.Teoria.Titulo" href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
                     </div>
                 }
@@ -80,11 +80,11 @@
                     <div class="row">
                         @if (!String.IsNullOrEmpty(t.Usuario.Foto))
                         {
-                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Usuario.Foto" /></a></div>
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src="data:image/jpeg;base64, @t.Usuario.Foto" style="border-radius:10px" /></a></div>
                         }
                         else
                         {
-                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png /></a></div>
+                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png style="border-radius:10px" /></a></div>
                         }
                         <div class="col-6"><a href="#" style="text-decoration:none;color:#d3d3d3">@t.Usuario.User</a></div>
                     </div>
