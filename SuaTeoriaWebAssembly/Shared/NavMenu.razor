@@ -4,14 +4,9 @@
 @inject NavigationManager nav
 
 @*NAVIGATION MENU*@
-<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+@*<nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class=container>
-        <button class="navbar-toggler" type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -24,7 +19,9 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-8 col-lg-8 col-md-8">
+            <div class="col-8 col-lg-8 col-md-8" 
+                
+            >
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -65,62 +62,95 @@
                             </NavLink>
                         </li>
                     }
-                    @*<AuthorizeView Roles="admin">*@
-                    @*<Authorized>*@
-                    @* <li class="nav-item">
-                    <NavLink class="nav-link" href="painel">
-                    <span aria-hidden="false"></span> ADM
-                    </NavLink>
-                    </li>*@
-                    @*</Authorized>*@
-                    @*</AuthorizeView>*@
                 </ul>
             </div>
-
-
-            @*Usuario*@
-            <div class="col-2 col-lg-2 col-md-2">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown">
-                        @if (!isAnonimo)
-                        {
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="fa fa-user"></span>
-                                <label>Olá, @userInfo.User</label>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item text-black" style="cursor:pointer" href="#">Meu Perfil</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-black" style="cursor:pointer" @onclick="ClearSession">Sair</a>
-
-                            </div>
-                        }
-                        else
-                        {
-
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="fa fa-user"></span>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                                <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalEntrar">Entrar</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalCriar">Cadastrar</a>
-
-                            </div>
-                        }
-                    </li>
-                </ul>
-            </div>
-
         </div>
 
+    </div>
+</nav>*@
 
-        @* <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>*@
+<nav class="navbar navbar-expand-lg navbar-dark bg-black">
+    <a class="navbar-brand" href=""><img src="images/Logo.png" class="logo" /></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span aria-hidden="true"></span> HOME
+                </NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="mangas">
+                    <span aria-hidden="true"></span> ANIMES/MANGÁS
+                </NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="series">
+                    <span aria-hidden="true"></span> SÉRIES
+                </NavLink>
+            </li>
 
+            <li class="nav-item">
+                <NavLink class="nav-link" href="filmes">
+                    <span aria-hidden="true"></span> FILMES
+                </NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="hqs">
+                    <span aria-hidden="true"></span> HQs
+                </NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="suateoria">
+                    <span aria-hidden="false"></span> SUA TEORIA
+                </NavLink>
+            </li>
+            @if (userInfo.Id == 1)
+            {
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="painel">
+                        <span aria-hidden="false"></span> PAINEL
+                    </NavLink>
+                </li>
+            }
+        </ul>
+        @*Usuario*@
+        <div class="col-2 col-lg-2 col-md-2">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    @if (!isAnonimo)
+                    {
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-user"></span>
+                            <label>Olá, @userInfo.User</label>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-black" style="cursor:pointer" href="#">Meu Perfil</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-black" style="cursor:pointer" @onclick="ClearSession">Sair</a>
+
+                        </div>
+                    }
+                    else
+                    {
+
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-user"></span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalEntrar">Entrar</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-black" href="" data-toggle="modal" data-target="#modalCriar">Cadastrar</a>
+
+                        </div>
+                    }
+                </li>
+            </ul>
+        </div>
+        @*Usuario FIM*@
     </div>
 </nav>
 @*FIM MENU NAV*@
@@ -219,4 +249,16 @@
         userInfo = new Usuario() { Id = 0, Nome = "Anonimous" };
         nav.NavigateTo("", true);
     }
+
+    #region Toggle
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "hide" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    #endregion
 }

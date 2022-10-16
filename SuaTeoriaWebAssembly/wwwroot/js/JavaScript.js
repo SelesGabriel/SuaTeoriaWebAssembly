@@ -1,4 +1,5 @@
-﻿function teste() {
+﻿
+function teste() {
     $(document).ready(function () {
         $('select').selectize({
             sortField: 'text'
@@ -47,4 +48,10 @@ function buscaImagem(conteudo) {
 
 
     return "";
+}
+
+function select2Function() {
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+    });
 }

@@ -33,7 +33,7 @@
                         {
                             @foreach (var item in obras.Where(w => w.IdCategoria == teoria.IdCategoria).OrderBy(o => o.Nome))
                             {
-                                <option value="@item.Id">@item.Nome.ToUpper()</option>
+                                <option value="@item.Id" id="@item.Id">@item.Nome.ToUpper()</option>
                             }
                             <option value="-1">Não encontrei</option>
                         }
@@ -64,68 +64,68 @@
         </div>
         <!-- #region Criacao texto -->
         <div class="my-3 container">
-        <BlazoredTextEditor @ref="@QuillHtml">
-        <ToolbarContent>
-        <span class="ql-formats">
-        <select class="ql-font">
-        <option selected=""></option>
-        <option value="serif"></option>
-        <option value="monospace"></option>
-        </select>
-        </span>
-        <select class="ql-header">
-        <option selected=""></option>
-        <option value="1"></option>
-        <option value="2"></option>
-        <option value="3"></option>
-        <option value="4"></option>
-        <option value="5"></option>
-        </select>
-        <span class="ql-formats">
-        <button class="ql-bold"></button>
-        <button class="ql-italic"></button>
-        <button class="ql-underline"></button>
-        <button class="ql-strike"></button>
-        </span>
-        <span class="ql-formats">
-        <select class="ql-color"></select>
-        <select class="ql-background"></select>
-        </span>
-        <span class="ql-formats">
-        <button class="ql-list" value="ordered"></button>
-        <button class="ql-list" value="bullet"></button>
-        </span>
-        <span class="ql-formats">
-        <button class="ql-link"></button>
-        <button class="ql-image"></button>
-        </span>
-        </ToolbarContent>
-        <EditorContent>
-        <label>Comece a criar sua teoria aqui :)</label>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        </EditorContent>
-        </BlazoredTextEditor>
+            <BlazoredTextEditor @ref="@QuillHtml">
+                <ToolbarContent>
+                    <span class="ql-formats">
+                        <select class="ql-font">
+                            <option selected=""></option>
+                            <option value="serif"></option>
+                            <option value="monospace"></option>
+                        </select>
+                    </span>
+                    <select class="ql-header">
+                        <option selected=""></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </select>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link"></button>
+                        <button class="ql-image"></button>
+                    </span>
+                </ToolbarContent>
+                <EditorContent>
+                    <label>Comece a criar sua teoria aqui :)</label>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                </EditorContent>
+            </BlazoredTextEditor>
         </div>
         <!-- #endregion -->
         @*<button @onclick="getHtml" class="btn-dark my-5"><a href="">Enviar</a></button>*@
 
-       @* <div class="my-3">
-            
-            @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
-            {
-                <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
-            }
+        @* <div class="my-3">
+
+        @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
+        {
+        <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" />
+        }
         </div>
         <div class="my-3 container">
-            <CriaTextoTeoria></CriaTextoTeoria>
+        <CriaTextoTeoria></CriaTextoTeoria>
         </div>*@
 
 
@@ -168,6 +168,14 @@
         //await js.InvokeVoidAsync("teste");
         await GetObrasAsync();
         await GetCategoriaAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //await js.InvokeAsync<IJSObjectReference>("select2Function");
+        }
     }
 
     async Task HandleFileSelect(IFileListEntry[] files)
