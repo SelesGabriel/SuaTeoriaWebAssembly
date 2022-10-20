@@ -1,0 +1,122 @@
+﻿@page "/perfil"
+@inject IJSRuntime js
+@inject Blazored.SessionStorage.ISessionStorageService session
+@inject HttpClient http
+@inject NavigationManager nav
+
+@if (userInfo.Id != 0)
+{
+    <EditForm Model="user" OnSubmit="@PutUsuario">
+        <div class="container">
+            <div class="row" style="text-align:center">
+                <ul>
+                    <li style="list-style:none;">
+
+                        <BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTituloSuaTeoria"></BlazorInputFile.InputFile>
+                        <label for="imagemTituloSuaTeoria"
+                           style="background-color:#ccc;width:75%;
+            border-radius:5px;cursor:pointer;padding:10px;text-align:center">
+                            Selecione um avatar &#187
+                        </label>
+                    </li>
+                    @if (file != null && !string.IsNullOrEmpty(user.Foto) && user.Foto.Length > 500)
+                    {
+                        <input type="image" style="height:200px; width:200px" src="data:image/jpeg;base64, @user.Foto" disabled="disabled" />
+                    }
+                    else if (!String.IsNullOrEmpty(user.Foto) && user.Foto.Length < 500)
+                    {
+                        <input type="image" style="height:200px; width:200px;" src="@user.Foto" disabled="disabled" />
+                    }
+                    else
+                    {
+                        <input type="image" style="height:200px; width:200px;" src=images/user.png disabled="disabled" />
+                    }
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Nome completo" type="text" @bind-value="user.Nome" /></li>
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Usuário" type="text" @bind-value="user.User" /></li>
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="seuemail@email.com" type="text" @bind-value="user.Email" /></li>
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Senha" type="password" @bind-value="user.Senha" /></li>
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Repetir Senha" type="password" /></li>
+                    <li class="py-4" style="list-style:none;"><input id="atualizarPerfil" type="submit" value="Atualizar Cadastro" /></li>
+                </ul>
+            </div>
+        </div>
+    </EditForm>
+}
+else{
+    <label style="color:white">Cadastre-se ou faça Login, é rapidão :)</label>
+}
+
+@code {
+    bool isAnonimo = false;
+    Usuario userInfo = new();
+    Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
+    Usuario user = new();
+    string baseUrl = Configuration.BaseUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await GetSessionUser();
+        if (userInfo.Id != 0)
+        {
+            await GetUser();
+        }
+    }
+
+
+    public async Task GetSessionUser()
+    {
+        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+
+        if (userInfo == null || userInfo.Id == 0)
+        {
+            userInfo = userAnonimo;
+            await session.SetItemAsync("SessionUser", userInfo);
+            isAnonimo = true;
+        }
+    }
+
+    public async Task GetUser()
+    {
+        user = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{userInfo.Id}");
+    }
+
+    public async Task PutUsuario()
+    {
+        await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
+        nav.NavigateTo("perfil", true);
+    }
+
+    #region File
+
+
+    IFileListEntry? file;
+    string errMessage = "";
+    string mensagem = "Escolha uma imagem para ser capa da sua teoria";
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+
+        }
+        await GetBase64File();
+        StateHasChanged();
+    }
+
+    async Task GetBase64File()
+    {
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        user.Foto = Convert.ToBase64String(bytes);
+        mensagem = "";
+    }
+    #endregion
+}
