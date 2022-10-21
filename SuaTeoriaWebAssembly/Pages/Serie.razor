@@ -4,7 +4,7 @@
 @inject Blazored.SessionStorage.ISessionStorageService session
 
 <div class="container">
-@if (Teorias == null || ObrasMaisFaladas == null || ObrasMaisFaladas == null || TopTeorias == null || TopUsuarios == null)
+    @if (Teorias.Count == 0 || ObrasMaisFaladas.Count == 0 || ObrasMaisFaladas.Count == 0 || TopTeorias.Count == 0 || TopUsuarios.Count == 0)
 {
     <div class="spinner"></div>
 }
