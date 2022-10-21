@@ -27,7 +27,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Entrar</button>
+                    <button type="submit" class="btn btn-primary @Disabled">Entrar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -41,28 +41,44 @@
     private Usuario userLogin = new();
     private List<Usuario> usuarios = new();
     string errorMessage = "";
+    public string Disabled = "";
     public async Task SessionUser(Usuario us)
     {
         await session.SetItemAsync("SessionUser", us);
     }
     private async Task Logar()
     {
-        usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
-        if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
+        if (!string.IsNullOrEmpty(usuario.User) && !string.IsNullOrEmpty(usuario.Senha))
         {
-            if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+            Disabled = "disabled";
+            usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
+            if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
             {
-                userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
-                SessionUser(userLogin);
-                nav.NavigateTo("", true);
+                if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+                {
+                    userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
+                    await SessionUser(userLogin);
+                    nav.NavigateTo("", true);
+                }
+                else
+                {
+                    Disabled = "";
+                    errorMessage = "Login ou senha inválido.";
+                }
             }
+
             else
-                errorMessage = "Login ou senha inválido.";
+            {
+                Disabled = "";
+                errorMessage = "Usuario não existe, cadastre-se.";
+            }
+        }
+        else
+        {
+            Disabled = "";
+            errorMessage = "Os campos não podem ficar vazios.";
         }
 
-        else
-            errorMessage = "Usuario não existe, cadastre-se.";
 
-        //nav.NavigateTo("",true);
     }
 }

@@ -3,6 +3,10 @@
 @inject HttpClient http
 @inject Blazored.SessionStorage.ISessionStorageService session
 
+@if(Teorias == null){
+    <div class="spinner"></div>
+}
+else{
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-6">
@@ -97,7 +101,7 @@
 
 
 </div>
-
+}
 @code {
     public int IdCategoria { get; set; } = 1;
     Teoria? teoria = new();

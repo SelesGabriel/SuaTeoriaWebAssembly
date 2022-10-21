@@ -10,13 +10,13 @@
         @if (!isFavorite)
         {
             <EditForm Model="favorite" OnSubmit="PostCurtida">
-                <button type="submit" class="mt-2 btn btn-dark">CURTIR</button>
+                <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIR</button>
             </EditForm>
         }
         else
         {
             <EditForm Model="favorite" OnSubmit="DeleteCurtida">
-                <button type="submit" class="mt-2 btn btn-dark">CURTIU</button>
+                <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIU</button>
             </EditForm>
         }
 
@@ -33,6 +33,7 @@
 
 
 @code {
+    public string Disabled = "";
     Usuario userInfo = new();
     Usuario usuario = new();
     Favorite favorite = new();
@@ -73,6 +74,7 @@
 
     async Task PostCurtida()
     {
+        Disabled = "disabled";
         favorite = new Favorite
             {
                 Date = DateTime.Now,
@@ -90,10 +92,12 @@
             await http.PostAsJsonAsync<Favorite>($"{baseUrl}/curtidas", favorite);
         }
         await GetCurtidas();
+        Disabled = "";
     }
 
     async Task DeleteCurtida()
     {
+        Disabled = "disabled";
         favorite = new Favorite
             {
                 IdCategoria = teoria.IdCategoria,
@@ -104,5 +108,7 @@
         await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria={favorite.IdTeoria}&idUsuario={favorite.IdUsuario}&idObra={favorite.IdObra}&idCategoria={favorite.IdCategoria}");
 
         await GetCurtidas();
+        
+        Disabled = "";
     }
 }

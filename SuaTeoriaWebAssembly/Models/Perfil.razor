@@ -34,33 +34,52 @@
                     <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Nome completo" type="text" @bind-value="user.Nome" /></li>
                     <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Usuário" type="text" @bind-value="user.User" /></li>
                     <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="seuemail@email.com" type="text" @bind-value="user.Email" /></li>
-                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Senha" type="password" @bind-value="user.Senha" /></li>
-                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Repetir Senha" type="password" /></li>
-                    <li class="py-4" style="list-style:none;"><input id="atualizarPerfil" type="submit" value="Atualizar Cadastro" /></li>
+                    <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Senha" type="@password" @bind-value="user.Senha" /></li>
+                    @if (trocarSenha)
+                    {
+                        <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Repetir Senha" type="@password" @bind-value="repetirSenha" /></li>
+                    }
+                    <li class="py-4" style="list-style:none;">
+                        <label style="color:white">Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
+                        <label style="color:white">Trocar Senha</label> <input type="checkbox" @bind-value="@trocarSenha" @onclick="TrocarSenha" />
+                    </li>
+                    @if (!validaSenha)
+                    {
+                        <li class="py-4" style="list-style:none;"> <label style="color:red">As senhas devem ser iguais.</label></li>
+                    }
+                    <li class="py-4" style="list-style:none;"><input type="submit" value="Atualizar Cadastro" class="btn-lg btn-success @Disabled" /></li>
                 </ul>
             </div>
         </div>
     </EditForm>
 }
-else{
+else
+{
     <label style="color:white">Cadastre-se ou faça Login, é rapidão :)</label>
 }
 
 @code {
     bool isAnonimo = false;
+    string password = "password";
+    bool mostrarSenha = false;
+    bool trocarSenha = false;
+    bool validaSenha = true;
+    string repetirSenha;
     Usuario userInfo = new();
     Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
     Usuario user = new();
+    Usuario usuarioAntigo = new();
     string baseUrl = Configuration.BaseUrl;
+    public string Disabled = "";
 
     protected override async Task OnInitializedAsync()
     {
-
         await GetSessionUser();
         if (userInfo.Id != 0)
         {
             await GetUser();
         }
+       
     }
 
 
@@ -79,12 +98,28 @@ else{
     public async Task GetUser()
     {
         user = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{userInfo.Id}");
+        usuarioAntigo = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{userInfo.Id}");
     }
 
     public async Task PutUsuario()
     {
-        await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
-        nav.NavigateTo("perfil", true);
+        Disabled = "disabled";
+        if (trocarSenha && user.Senha != repetirSenha)
+        {
+            validaSenha = false;
+        }
+        else
+        {
+            validaSenha = true;
+        }
+        if (validaSenha)
+        {
+            string senha = trocarSenha ? user.Senha : usuarioAntigo.Senha;
+            user.Senha = senha;
+            await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
+            nav.NavigateTo("perfil", true);
+        }
+        Disabled = "";
     }
 
     #region File
@@ -119,4 +154,20 @@ else{
         mensagem = "";
     }
     #endregion
+
+    public async Task MostrarSenha()
+    {
+        mostrarSenha = !mostrarSenha;
+        if (mostrarSenha)
+        {
+            password = "text";
+        }
+        else
+            password = "password";
+    }
+
+    public async Task TrocarSenha()
+    {
+        trocarSenha = !trocarSenha;
+    }
 }
