@@ -263,7 +263,7 @@ datalist {
     height:80px;
     animation: spin 700ms linear infinite;
     top: 40%;
-    left:55%;
+    left:50%;
     position:absolute;
 }
 
@@ -274,6 +274,18 @@ datalist {
     100%{
         transform:rotate(360deg)
     }
+}
+
+
+.loadingInicial {
+    flex-direction: column;
+    background-image: url('images/cool-background (1).png');
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 /*Loading fim*/
