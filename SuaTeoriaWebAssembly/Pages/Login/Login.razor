@@ -37,6 +37,8 @@
 </EditForm>
 
 @code {
+
+
     private Usuario usuario = new();
     private Usuario userLogin = new();
     private List<Usuario> usuarios = new();
@@ -51,6 +53,7 @@
         if (!string.IsNullOrEmpty(usuario.User) && !string.IsNullOrEmpty(usuario.Senha))
         {
             Disabled = "disabled";
+
             usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
             if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
             {
@@ -78,6 +81,7 @@
             Disabled = "";
             errorMessage = "Os campos não podem ficar vazios.";
         }
+
 
 
     }

@@ -19,8 +19,8 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-8 col-lg-8 col-md-8" 
-                
+            <div class="col-8 col-lg-8 col-md-8"
+
             >
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
@@ -194,12 +194,21 @@
                         </div>
                         <div class="form-group">
                             <label for="senhaCriacao" class="col-form-label">Senha</label>
-                            <input @bind-value="usuario.Senha" type="password" class="form-control" id="senhaCriacao" placeholder="Senha">
+                            <input @bind-value="usuario.Senha" type="@password" class="form-control" id="senhaCriacao" placeholder="Senha">
                         </div>
                         <div class="form-group">
                             <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha</label>
-                            <input type="password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
+                            <input @bind-value="repetirSenha" type="@password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
                         </div>
+                        <label>Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                           <br/><label style="color:red">@errorMessage</label>
+                        }
+                        else if (!validaSenha)
+                        {
+                            <br/><label style="color:red">As senhas devem ser iguais.</label>
+                        }
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -213,13 +222,50 @@
 @*FIM MODAL*@
 
 @code {
+    string password = "password";
+    bool mostrarSenha = false;
+    bool validaSenha = true;
+    string repetirSenha;
+    public string Disabled = "";
+    string errorMessage = "";
+
     Usuario usuario = new();
     string baseUrl = Configuration.BaseUrl;
     async Task PostUsuario()
     {
-        await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
-        js.InvokeVoidAsync("alert", "Cadastado com sucesso");
-        nav.NavigateTo("", true);
+        Disabled = "disabled";
+
+        if (string.IsNullOrEmpty(usuario.Nome))
+        {
+            errorMessage = "Campo Nome não pode ficar vazio";
+        }
+        else if (string.IsNullOrEmpty(usuario.Senha))
+        {
+            errorMessage = "Campo senha não pode ficar vazio";
+        }
+        else if (string.IsNullOrEmpty(usuario.User))
+        {
+            errorMessage = "Campo User não pode ficar vazio";
+        }
+        else
+        {
+            errorMessage = "";
+        }
+        if (usuario.Senha != repetirSenha)
+        {
+            validaSenha = false;
+        }
+        else
+        {
+            validaSenha = true;
+        }
+        if (validaSenha && string.IsNullOrEmpty(errorMessage))
+        {
+            var result = await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
+           
+            js.InvokeVoidAsync("alert", "Cadastado com sucesso");
+            nav.NavigateTo("", true);
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -261,4 +307,16 @@
         collapseNavMenu = !collapseNavMenu;
     }
     #endregion
+
+    public async Task MostrarSenha()
+    {
+        mostrarSenha = !mostrarSenha;
+        if (mostrarSenha)
+        {
+            password = "text";
+        }
+        else
+            password = "password";
+    }
+
 }
