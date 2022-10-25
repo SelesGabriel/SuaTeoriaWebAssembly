@@ -110,7 +110,7 @@
             @if (userInfo.Id == 1)
             {
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="painel">
+                    <NavLink class="nav-link" href="painel-selesgabriel-adm">
                         <span aria-hidden="false"></span> PAINEL
                     </NavLink>
                 </li>
@@ -181,11 +181,11 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="nomeCriacao" class="col-form-label">Nome</label>
+                            <label for="nomeCriacao" class="col-form-label">Nome *</label>
                             <input @bind-value="usuario.Nome" type="text" class="form-control" id="nomeCriacao" placeholder="Nome Completo">
                         </div>
                         <div class="form-group">
-                            <label for="usuarioCriacao" class="col-form-label">Usuário</label>
+                            <label for="usuarioCriacao" class="col-form-label">Usuário *</label>
                             <input @bind-value="usuario.User" type="text" class="form-control" id="usuarioCriacao" placeholder="Usuário">
                         </div>
                         <div class="form-group">
@@ -193,26 +193,30 @@
                             <input @bind-value="usuario.Email" type="email" class="form-control" id="emailCriacao" placeholder="seuemail@email.com">
                         </div>
                         <div class="form-group">
-                            <label for="senhaCriacao" class="col-form-label">Senha</label>
+                            <label for="senhaCriacao" class="col-form-label">Senha *</label>
                             <input @bind-value="usuario.Senha" type="@password" class="form-control" id="senhaCriacao" placeholder="Senha">
                         </div>
                         <div class="form-group">
-                            <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha</label>
+                            <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha *</label>
                             <input @bind-value="repetirSenha" type="@password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
                         </div>
                         <label>Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
                         @if (!string.IsNullOrEmpty(errorMessage))
                         {
-                           <br/><label style="color:red">@errorMessage</label>
+                            <br />
+
+                            <label style="color:red">@errorMessage</label>
                         }
                         else if (!validaSenha)
                         {
-                            <br/><label style="color:red">As senhas devem ser iguais.</label>
+                            <br />
+
+                            <label style="color:red">As senhas devem ser iguais.</label>
                         }
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <button type="submit" class="btn btn-primary @Disabled">Cadastrar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -238,33 +242,47 @@
         if (string.IsNullOrEmpty(usuario.Nome))
         {
             errorMessage = "Campo Nome não pode ficar vazio";
-        }
-        else if (string.IsNullOrEmpty(usuario.Senha))
-        {
-            errorMessage = "Campo senha não pode ficar vazio";
+            Disabled = "";
         }
         else if (string.IsNullOrEmpty(usuario.User))
         {
             errorMessage = "Campo User não pode ficar vazio";
+            Disabled = "";
+        }
+        else if (string.IsNullOrEmpty(usuario.Senha))
+        {
+            errorMessage = "Campo senha não pode ficar vazio";
+            Disabled = "";
         }
         else
         {
             errorMessage = "";
+            Disabled = "";
         }
         if (usuario.Senha != repetirSenha)
         {
             validaSenha = false;
+            Disabled = "";
         }
         else
         {
             validaSenha = true;
+            Disabled = "";
         }
         if (validaSenha && string.IsNullOrEmpty(errorMessage))
         {
             var result = await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
-           
-            js.InvokeVoidAsync("alert", "Cadastado com sucesso");
-            nav.NavigateTo("", true);
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                await js.InvokeVoidAsync("alert", $"Não foi possível completar o cadastro, Usuario já existe");
+                Disabled = "";
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", "Cadastado com sucesso");
+                Disabled = "";
+                nav.NavigateTo("", true);
+            }
         }
     }
 
