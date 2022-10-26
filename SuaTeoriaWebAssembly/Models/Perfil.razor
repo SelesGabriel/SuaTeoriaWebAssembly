@@ -6,7 +6,8 @@
 
 @if (userInfo.Id != 0)
 {
-    <EditForm Model="user" OnSubmit="@PutUsuario">
+    <EditForm Model="user" OnValidSubmit="@PutUsuario">
+        <DataAnnotationsValidator />
         <div class="container">
             <div class="row" style="text-align:center">
                 <ul>
@@ -21,31 +22,43 @@
                     </li>
                     @if (file != null && !string.IsNullOrEmpty(user.Foto) && user.Foto.Length > 500)
                     {
-                        <input type="image" style="height:200px; width:200px" src="data:image/jpeg;base64, @user.Foto" disabled="disabled" />
+                        <input type="image" style="height:200px; width:200px;pointer-events: none;" src="data:image/jpeg;base64, @user.Foto" disabled="disabled" />
                     }
                     else if (!String.IsNullOrEmpty(user.Foto) && user.Foto.Length < 500)
                     {
-                        <input type="image" style="height:200px; width:200px;" src="@user.Foto" disabled="disabled" />
+                        <input type="image" style="height:200px; width:200px;pointer-events: none;" src="@user.Foto" disabled="disabled" />
                     }
                     else
                     {
-                        <input type="image" style="height:200px; width:200px;" src=images/user.png disabled="disabled" />
+                        <input type="image" style="height:200px; width:200px;pointer-events: none;" src=images/user.png disabled="disabled" />
                     }
                     <li style="list-style:none;color:white;">Nome:</li>
-                    <li class="pb-4" style="list-style:none;"><label class="pr-2"></label><input class="campoPerfil" placeholder="Nome completo" type="text" @bind-value="user.Nome" /></li>
+                    <li class="pb-4" style="list-style:none;">
+                        <input class="campoPerfil" placeholder="Nome completo" type="text" @bind-value="user.Nome" />
+                    </li>
+
                     <li style="list-style:none;color:white;">Usuario:</li>
-                    <li class="pb-4" style="list-style:none;"><input class="campoPerfil" placeholder="Usuário" type="text" @bind-value="user.User" /></li>
+                    <li class="pb-4" style="list-style:none;pointer-events: none;">
+                        <input class="campoPerfil" placeholder="Usuário" type="text" @bind-value="user.User" disabled />
+                    </li>
+
                     <li style="list-style:none;color:white;">Email:</li>
-                    <li class="pb-4" style="list-style:none;"><input class="campoPerfil" placeholder="seuemail@email.com" type="text" @bind-value="user.Email" /></li>
+                    <li class="pb-4" style="list-style:none;">
+                        <input class="campoPerfil" placeholder="seuemail@email.com" type="text" @bind-value="user.Email" />
+                    </li>
+
                     <li style="list-style:none;color:white;">Senha:</li>
-                    <li class="pb-4" style="list-style:none;"><input class="campoPerfil" placeholder="Senha" type="@password" @bind-value="user.Senha" /></li>
+                    <li class="pb-4" style="list-style:none;">
+                        <input class="campoPerfil" placeholder="Senha" type="@password" @bind-value="user.Senha" disabled="@DisabledField" />
+                    </li>
+
                     @if (trocarSenha)
                     {
-                        <li class="py-4" style="list-style:none;"><input class="campoPerfil" placeholder="Repetir Senha" type="@password" @bind-value="repetirSenha" /></li>
+                        <li class="py-4" style="list-style:none;"><input class="campoPerfil " placeholder="Repetir Senha" type="@password" @bind-value="repetirSenha" disabled="@DisabledField" /></li>
                     }
                     <li class="py-4" style="list-style:none;">
-                        <label style="color:white">Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
-                        <label style="color:white">Trocar Senha</label> <input type="checkbox" @bind-value="@trocarSenha" @onclick="TrocarSenha" />
+                        <label style="color:white"> Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
+                        <label style="color:white">&nbsp; Trocar Senha</label> <input type="checkbox" @bind-value="@trocarSenha" @onclick="TrocarSenha" />
                     </li>
                     @if (!validaSenha)
                     {
@@ -54,6 +67,7 @@
                     <li class="py-4" style="list-style:none;"><input type="submit" value="Atualizar Cadastro" class="btn-lg btn-success @Disabled" /></li>
                 </ul>
             </div>
+            <ValidationSummary></ValidationSummary>
         </div>
     </EditForm>
 }
@@ -69,6 +83,7 @@ else
     bool trocarSenha = false;
     bool validaSenha = true;
     string repetirSenha;
+    bool DisabledField = true;
 
     Usuario userInfo = new();
     Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
@@ -84,7 +99,7 @@ else
         {
             await GetUser();
         }
-       
+
     }
 
 
@@ -117,12 +132,20 @@ else
         {
             validaSenha = true;
         }
-        if (validaSenha)
+        if (usuarioAntigo.User != user.User)
         {
-            string senha = trocarSenha ? user.Senha : usuarioAntigo.Senha;
-            user.Senha = senha;
-            await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
-            nav.NavigateTo("perfil", true);
+            return;
+        }
+        if (usuarioAntigo.Nome != user.Nome || usuarioAntigo.Foto != user.Foto || usuarioAntigo.Email != user.Email)
+        {
+            if (validaSenha)
+            {
+                string senha = trocarSenha ? user.Senha : usuarioAntigo.Senha;
+                user.Senha = senha;
+
+                await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
+                nav.NavigateTo("perfil", true);
+            }
         }
         Disabled = "";
     }
@@ -174,5 +197,6 @@ else
     public async Task TrocarSenha()
     {
         trocarSenha = !trocarSenha;
+        DisabledField = !DisabledField;
     }
 }

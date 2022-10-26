@@ -1,6 +1,7 @@
 ﻿@inject NavigationManager nav
 @inject Blazored.SessionStorage.ISessionStorageService session
 @inject HttpClient http
+@inject IJSRuntime js
 
 
 <EditForm Model="usuario" OnSubmit="Logar">
@@ -16,12 +17,15 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="usuarioLogin" class="col-form-label">Usuario / Email</label>
+                            <label for="usuarioLogin" class="col-form-label">Usuario</label>
                             <input type="text" class="form-control" id="usuarioLogin" placeholder="Usuario ou Email" @bind-value="usuario.User">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Senha</label>
-                            <input type="password" class="form-control" placeholder="Senha" @bind-value="usuario.Senha" />
+                            <input type="@password" class="form-control" placeholder="Senha" @bind-value="usuario.Senha" />
+                        </div>
+                        <div class="form-group">
+                            <label>Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
                         </div>
                         @errorMessage
                     </form>
@@ -37,52 +41,89 @@
 </EditForm>
 
 @code {
+    int count;
+    int tentativas;
+    Random random = new();
 
+    bool mostrarSenha = false;
+    string password = "password";
 
     private Usuario usuario = new();
     private Usuario userLogin = new();
     private List<Usuario> usuarios = new();
     string errorMessage = "";
     public string Disabled = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        count = 0;
+        tentativas = random.Next(4, 7);
+    }
+
     public async Task SessionUser(Usuario us)
     {
         await session.SetItemAsync("SessionUser", us);
     }
     private async Task Logar()
     {
-        if (!string.IsNullOrEmpty(usuario.User) && !string.IsNullOrEmpty(usuario.Senha))
+        try
         {
-            Disabled = "disabled";
-
-            usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
-            if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
+            if (!string.IsNullOrEmpty(usuario.User) && !string.IsNullOrEmpty(usuario.Senha))
             {
-                if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+                Disabled = "disabled";
+
+                usuarios = await http.GetFromJsonAsync<List<Usuario>>($"https://suateoriaapi.azurewebsites.net/usuarios");
+                if (usuarios.Where(x => x.User.ToLower() == usuario.User.ToLower()).Any())
                 {
-                    userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
-                    await SessionUser(userLogin);
-                    nav.NavigateTo("", true);
+                    if (usuarios.Where(x => x.User == usuario.User && x.Senha == usuario.Senha).Any())
+                    {
+                        userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
+                        await SessionUser(userLogin);
+                        nav.NavigateTo("", true);
+                    }
+                    else
+                    {
+                        Disabled = "";
+                        errorMessage = "Login ou senha inválido.";
+                        count = count + 1;
+                        if (count > tentativas)
+                        {
+                            await js.InvokeVoidAsync("alert", "Login ou senha inválido. Você será redirecionado para o início");
+                            nav.NavigateTo("", true);
+                        }
+
+                    }
                 }
+
                 else
                 {
                     Disabled = "";
-                    errorMessage = "Login ou senha inválido.";
+                    errorMessage = "Usuario não existe, cadastre-se.";
                 }
             }
-
             else
             {
                 Disabled = "";
-                errorMessage = "Usuario não existe, cadastre-se.";
+                errorMessage = "Os campos não podem ficar vazios.";
             }
         }
-        else
+        catch (Exception ex)
         {
-            Disabled = "";
-            errorMessage = "Os campos não podem ficar vazios.";
+            js.InvokeVoidAsync("alert", ex.Message);
+            nav.NavigateTo("", true);
         }
-
-
+        
 
     }
+    public async Task MostrarSenha()
+    {
+        mostrarSenha = !mostrarSenha;
+        if (mostrarSenha)
+        {
+            password = "text";
+        }
+        else
+            password = "password";
+    }
+
 }

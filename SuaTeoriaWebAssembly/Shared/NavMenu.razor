@@ -168,7 +168,8 @@
 
 
 @*MODAL PARA CRIAR CONTA*@
-<EditForm Model="usuario" OnSubmit="@PostUsuario">
+<EditForm Model="@usuario" OnValidSubmit="@PostUsuario">
+    <DataAnnotationsValidator />
     <div class="modal fade" id="modalCriar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -182,32 +183,30 @@
                     <form>
                         <div class="form-group">
                             <label for="nomeCriacao" class="col-form-label">Nome *</label>
-                            <input @bind-value="usuario.Nome" type="text" class="form-control" id="nomeCriacao" placeholder="Nome Completo">
+                            <InputText @bind-Value="@usuario.Nome" type="text" class="form-control" id="nomeCriacao" placeholder="Nome Completo"></InputText>
+                            <ValidationMessage For="()=>usuario.Nome" />
                         </div>
                         <div class="form-group">
                             <label for="usuarioCriacao" class="col-form-label">Usuário *</label>
-                            <input @bind-value="usuario.User" type="text" class="form-control" id="usuarioCriacao" placeholder="Usuário">
+                            <InputText @bind-Value="usuario.User" type="text" class="form-control" id="usuarioCriacao" placeholder="Usuário"></InputText>
+                            <ValidationMessage For="()=>usuario.User" />
                         </div>
                         <div class="form-group">
-                            <label for="emailCriacao" class="col-form-label">Email</label>
-                            <input @bind-value="usuario.Email" type="email" class="form-control" id="emailCriacao" placeholder="seuemail@email.com">
+                            <label for="usuarioCriacao" class="col-form-label">Email *</label>
+                            <InputText @bind-Value="usuario.Email" type="text" class="form-control" id="emailCriacao" placeholder="Email"></InputText>
+                            <ValidationMessage For="()=>usuario.Email" />
                         </div>
                         <div class="form-group">
                             <label for="senhaCriacao" class="col-form-label">Senha *</label>
-                            <input @bind-value="usuario.Senha" type="@password" class="form-control" id="senhaCriacao" placeholder="Senha">
+                            <InputText @bind-Value="usuario.Senha" type="@password" class="form-control" id="senhaCriacao" placeholder="Senha"></InputText>
+                            <ValidationMessage For="()=>usuario.Senha" />
                         </div>
                         <div class="form-group">
                             <label for="rptSenhaCriacao" class="col-form-label">Repita a Senha *</label>
                             <input @bind-value="repetirSenha" type="@password" class="form-control" id="rptSenhaCriacao" placeholder="Repetir Senha">
                         </div>
                         <label>Mostrar Senha</label> <input type="checkbox" @bind-value="@mostrarSenha" @onclick="MostrarSenha" />
-                        @if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            <br />
-
-                            <label style="color:red">@errorMessage</label>
-                        }
-                        else if (!validaSenha)
+                        @if (!validaSenha)
                         {
                             <br />
 
@@ -237,53 +236,63 @@
     string baseUrl = Configuration.BaseUrl;
     async Task PostUsuario()
     {
-        Disabled = "disabled";
+        try
+        {
+            Disabled = "disabled";
 
-        if (string.IsNullOrEmpty(usuario.Nome))
-        {
-            errorMessage = "Campo Nome não pode ficar vazio";
-            Disabled = "";
-        }
-        else if (string.IsNullOrEmpty(usuario.User))
-        {
-            errorMessage = "Campo User não pode ficar vazio";
-            Disabled = "";
-        }
-        else if (string.IsNullOrEmpty(usuario.Senha))
-        {
-            errorMessage = "Campo senha não pode ficar vazio";
-            Disabled = "";
-        }
-        else
-        {
-            errorMessage = "";
-            Disabled = "";
-        }
-        if (usuario.Senha != repetirSenha)
-        {
-            validaSenha = false;
-            Disabled = "";
-        }
-        else
-        {
-            validaSenha = true;
-            Disabled = "";
-        }
-        if (validaSenha && string.IsNullOrEmpty(errorMessage))
-        {
-            var result = await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (string.IsNullOrEmpty(usuario.Nome))
             {
-                await js.InvokeVoidAsync("alert", $"Não foi possível completar o cadastro, Usuario já existe");
+                errorMessage = "Campo Nome não pode ficar vazio";
+                Disabled = "";
+            }
+            else if (string.IsNullOrEmpty(usuario.User))
+            {
+                errorMessage = "Campo User não pode ficar vazio";
+                Disabled = "";
+            }
+            else if (string.IsNullOrEmpty(usuario.Senha))
+            {
+                errorMessage = "Campo senha não pode ficar vazio";
                 Disabled = "";
             }
             else
             {
-                await js.InvokeVoidAsync("alert", "Cadastado com sucesso");
+                errorMessage = "";
                 Disabled = "";
-                nav.NavigateTo("", true);
+            }
+            if (usuario.Senha != repetirSenha)
+            {
+                validaSenha = false;
+                Disabled = "";
+            }
+            else
+            {
+                validaSenha = true;
+                Disabled = "";
+            }
+            if (validaSenha && string.IsNullOrEmpty(errorMessage))
+            {
+
+                var result = await http.PostAsJsonAsync<Usuario>($"{baseUrl}/usuarios", usuario);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    await js.InvokeVoidAsync("alert", $"Não foi possível completar o cadastro, Usuario já existe");
+                    Disabled = "";
+                }
+                else
+                {
+                    await js.InvokeVoidAsync("alert", "Cadastado com sucesso");
+                    Disabled = "";
+                    nav.NavigateTo("", true);
+                }
             }
         }
+        catch (Exception ex)
+        {
+            js.InvokeVoidAsync("alert", ex.Message);
+            nav.NavigateTo("", true);
+        }
+
     }
 
     protected override async Task OnInitializedAsync()

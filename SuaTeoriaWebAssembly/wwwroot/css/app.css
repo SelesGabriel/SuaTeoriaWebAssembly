@@ -289,3 +289,46 @@ datalist {
 }
 
 /*Loading fim*/
+
+/*Checkbox*/
+input[type=checkbox] {
+    position: relative;
+}
+
+    input[type=checkbox]:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 0;
+        left: 0;
+        background-color: white;
+        border:groove;
+    }
+
+    input[type=checkbox]:checked:after {
+        content: "";
+        display: block;
+        width: 5px;
+        height: 10px;
+        border: solid black;
+        border-width: 0px 3px 3px 0px;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+        position: absolute;
+        top: 4px;
+        left: 8px;
+    }
+
+span {
+    margin: 0px 15px;
+}
+
+.disabledField {
+    pointer-events: none;
+    
+}
+
+/*Checkbox fim*/

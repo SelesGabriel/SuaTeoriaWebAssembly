@@ -55,3 +55,11 @@ function select2Function() {
         $('.js-example-basic-single').select2();
     });
 }
+
+function mostrarAlert() {
+    alert();
+}
+
+window.displayTickerAlert1 = (text) => {
+    alert(text);
+};
