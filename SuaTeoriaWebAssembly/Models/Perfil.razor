@@ -135,8 +135,10 @@ else
         if (usuarioAntigo.User != user.User)
         {
             return;
+            nav.NavigateTo("perfil", true);
         }
-        if (usuarioAntigo.Nome != user.Nome || usuarioAntigo.Foto != user.Foto || usuarioAntigo.Email != user.Email)
+
+        if (usuarioAntigo.Nome != user.Nome || usuarioAntigo.Foto != user.Foto || usuarioAntigo.Email != user.Email || usuarioAntigo.Senha != user.Senha)
         {
             if (validaSenha)
             {
@@ -145,6 +147,8 @@ else
 
                 await http.PutAsJsonAsync<Usuario>($"{baseUrl}/usuarios/{user.Id}", user);
                 nav.NavigateTo("perfil", true);
+                Disabled = "";
+
             }
         }
         Disabled = "";
