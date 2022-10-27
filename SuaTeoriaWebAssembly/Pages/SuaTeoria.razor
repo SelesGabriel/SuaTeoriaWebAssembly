@@ -14,7 +14,7 @@
             @if (userInfo.Nome == "Anonimous")
             {
                 <label style="color:#ab2828">
-                   <b>**** Você precisa estar logado para criar uma teoria. Se não tiver uma conta, cadastre-se, é rapidão :) </b>
+                    <b>**** Você precisa estar logado para criar uma teoria. Se não tiver uma conta, cadastre-se, é rapidão :) </b>
                 </label>
             }
             <div class=row>
@@ -282,8 +282,8 @@
             if (errMessage == null || errMessage == "")
             {
                 await js.InvokeVoidAsync("alert", "Tudo certo!");
-                nav.NavigateTo("");
             }
+            nav.NavigateTo("");
             Disabled = false;
         }
     }
