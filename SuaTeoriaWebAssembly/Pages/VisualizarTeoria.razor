@@ -2,6 +2,7 @@
 @inject HttpClient http
 @inject Blazored.SessionStorage.ISessionStorageService session
 @inject IJSRuntime js
+@inject NavigationManager nav
 
 <div class="container my-5">
     <input type="image" style="height:50%; width:100%; cursor:default" src="@teoria.ImagemTitulo" />
@@ -19,7 +20,7 @@
                 <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIU</button>
             </EditForm>
         }
-        
+
         <div class="pt-3" style="color:white;">Criado por: <b>@usuario.User <br /></b> Data: <b>@teoria.DataCriacao.ToShortDateString()</b></div>
     </div>
     <div class="col-sm-12 my-3 text-center" style="color:white;">
@@ -58,8 +59,26 @@
 
     async Task GetTeoriaAsync(int idTeoria)
     {
-        teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
-        conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=", "<img style=max-width:100% src=");
+        try
+        {
+            teoria = await http.GetFromJsonAsync<Teoria>($"{baseUrl}/teoria/{idTeoria}");
+            if (teoria != null)
+            {
+                conteudo = (MarkupString)teoria.Conteudo.Replace("<img src=", "<img style=max-width:100% src=");
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", "Teoria não existe");
+                nav.NavigateTo("", true);
+            }
+
+        }
+        catch (Exception)
+        {
+
+            nav.NavigateTo("", true);
+        }
+
     }
 
     async Task GetCurtidas()
@@ -108,7 +127,7 @@
         await http.DeleteAsync($"{baseUrl}/curtidas?idTeoria={favorite.IdTeoria}&idUsuario={favorite.IdUsuario}&idObra={favorite.IdObra}&idCategoria={favorite.IdCategoria}");
 
         await GetCurtidas();
-        
+
         Disabled = "";
     }
 }
