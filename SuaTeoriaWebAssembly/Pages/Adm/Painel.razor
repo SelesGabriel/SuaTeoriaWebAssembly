@@ -32,7 +32,6 @@
     </div>
 </EditForm>
 <br />
-@*<EditForm Model="teoria" OnSubmit="@"*@
 
 <div class="container">
     <h2 style="color:#d3d3d3">Alterar obra não encontrada</h2>
@@ -201,6 +200,7 @@
     async Task UpdateObra()
     {
         await http.PutAsJsonAsync<Obra>($"{baseUrl}/obra/{obraAlterar.Id}", obraAlterar);
+        nav.NavigateTo("", true);
     }
 
     //async Task AtualizaObraTeoria()
