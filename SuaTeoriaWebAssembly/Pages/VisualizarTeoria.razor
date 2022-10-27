@@ -19,8 +19,8 @@
                 <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIU</button>
             </EditForm>
         }
-
-        <div style="color:white;">Criado por: <b>@usuario.User</b></div>
+        
+        <div class="pt-3" style="color:white;">Criado por: <b>@usuario.User <br /></b> Data: <b>@teoria.DataCriacao.ToShortDateString()</b></div>
     </div>
     <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
