@@ -10,8 +10,13 @@
 
     <EditForm Model="teoria" OnSubmit="@PostTeoriaAsync">
         <DataAnnotationsValidator></DataAnnotationsValidator>
-
         <div class="container">
+            @if (userInfo.Nome == "Anonimous")
+            {
+                <label style="color:#ab2828">
+                   <b>**** Você precisa estar logado para criar uma teoria. Se não tiver uma conta, cadastre-se, é rapidão :) </b>
+                </label>
+            }
             <div class=row>
                 <div class="col-sm-12 my-3">
                     <input type="text" id=tituloTeoria placeholder="Digite o título da teoria..." @bind-value="teoria.Titulo" />
@@ -58,7 +63,7 @@
                 </label>
                 @if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
                 {
-                    <input type="image" style="height:50%; width:100%;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" disabled="disabled" />
+                    <input type="image" style="height:50%; width:100%;pointer-events: none;" src="data:image/jpeg;base64, @teoria.ImagemTitulo" disabled="disabled" />
                 }
             </div>
         </div>
@@ -130,7 +135,7 @@
 
 
         <div class="text-center my-4 py-5">
-            <input type="submit" value="Criar Teoria" class="btn-dark btn-lg">
+            <input disabled="@Disabled" type="submit" value="Criar Teoria" class="btn-dark btn-lg">
         </div>
 
     </EditForm>
@@ -149,6 +154,7 @@
     int count = 1;
     public string htmlText { get; set; } = "";
 
+    public bool Disabled = false;
     int idCategoria;
     int valorNaoEncontrei;
     string baseUrl = Configuration.BaseUrl;
@@ -164,6 +170,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Disabled = false;
         userInfo = await session.GetItemAsync<Usuario>("SessionUser");
         //await js.InvokeVoidAsync("teste");
         await GetObrasAsync();
@@ -209,7 +216,9 @@
 
     async Task GetCategoriaAsync()
     {
+        Disabled = true;
         categorias = await http.GetFromJsonAsync<List<Categoria>>($"{baseUrl}/categorias");
+        Disabled = false;
     }
 
     async Task GetObrasAsync()
@@ -219,6 +228,7 @@
 
     async Task PostTeoriaAsync()
     {
+        Disabled = true;
         //htmlText = await js.InvokeAsync<string>("getHtml");
         htmlText = await this.QuillHtml.GetHTML();
         //htmlText.Replace(input, "").Replace(dragDropZone, "").Replace(altura, "").Replace(largura, "");
@@ -273,8 +283,8 @@
             {
                 await js.InvokeVoidAsync("alert", "Tudo certo!");
                 nav.NavigateTo("");
-
             }
+            Disabled = false;
         }
     }
 }
