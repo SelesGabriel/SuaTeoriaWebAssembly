@@ -27,7 +27,7 @@
             </select>
             <input type="text" placeholder="Nome da obra" @bind-value="obra.Nome" />
             <BlazorInputFile.InputFile OnChange="AdicionaImagemObra" id="imagemTituloPainel"></BlazorInputFile.InputFile>
-            <input type="submit" value="Criar Obra" class="btn-dark btn-md">
+            <input type="submit" value="Criar Obra" class="btn-dark btn-md" disabled="@Disabled">
         </div>
     </div>
 </EditForm>
@@ -69,7 +69,7 @@
                             }
                         </select>
                     </td>
-                    <td><button @onclick="(()=>PutTeoriaAsync(t.Id))">Salvar</button></td>
+                    <td><button disabled="@Disabled" @onclick="(()=>PutTeoriaAsync(t.Id))">Salvar</button></td>
                 </tr>
             }
         </tbody>
@@ -104,7 +104,7 @@
         <label style="color:#d3d3d3">Alterar nome:</label>
         <input type="text" @bind-value="obraAlterar.Nome" />
         <br />
-        <input type="submit" class="btn-dark" value="Enviar" />
+        <input type="submit" class="btn-dark" value="Enviar" disabled="@Disabled"/>
     </div>
 </EditForm>
 
@@ -120,12 +120,15 @@
     string errMessage = "";
     string baseUrl = Configuration.BaseUrl;
 
+    public bool Disabled = false;
+
     int skip = 0;
     int take = 50;
 
 
     protected override async Task OnInitializedAsync()
     {
+        Disabled = false;
         await GetCategoriasAsync();
         await GetTeoriaObraNova();
         await GetObrasAsync();
@@ -133,6 +136,7 @@
 
     async Task PostCategoriaAsync()
     {
+        Disabled = true;
         if (string.IsNullOrEmpty(categoria.Nome))
         {
             errMessage = "Coloque o nome da categoria";
@@ -142,21 +146,25 @@
         {
             await http.PostAsJsonAsync<Categoria>($"{baseUrl}/categorias", categoria);
         }
+        nav.NavigateTo("painel-selesgabriel-adm", true);
+        Disabled = true;
     }
 
     async Task PutTeoriaAsync(int idTeoria)
     {
+        Disabled = true;
         if (obra.IdCategoria != 0)
         {
             errMessage = "Coloque uma categoria";
             await js.InvokeVoidAsync("alert", errMessage);
         }
         await http.PutAsJsonAsync<Teoria>($"{baseUrl}/teoriaupdate?idTeoria={idTeoria}", teoria);
-        nav.NavigateTo("painel", true);
+        nav.NavigateTo("painel-selesgabriel-adm", true);
     }
 
     async Task PostObraAsync()
     {
+        Disabled = true;
         if (obra.IdCategoria == 0)
         {
             errMessage = "Selecione uma categoria";
@@ -176,7 +184,7 @@
         else
         {
             await http.PostAsJsonAsync<Obra>($"{baseUrl}/obras", obra);
-            nav.NavigateTo("painel", true);
+            nav.NavigateTo("painel-selesgabriel-adm", true);
         }
     }
 
@@ -199,8 +207,9 @@
     Obra obraAlterar = new();
     async Task UpdateObra()
     {
+        Disabled = true;
         await http.PutAsJsonAsync<Obra>($"{baseUrl}/obra/{obraAlterar.Id}", obraAlterar);
-        nav.NavigateTo("", true);
+        nav.NavigateTo("painel-selesgabriel-adm", true);
     }
 
     //async Task AtualizaObraTeoria()
