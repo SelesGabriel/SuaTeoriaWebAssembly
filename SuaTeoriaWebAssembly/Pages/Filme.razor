@@ -40,7 +40,7 @@ else{
                                     <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
 
                                 }
-                                if (skip == 0 || Teorias.Count() == 6)
+                                    if (QuantidadeTeorias > 8)
                                 {
                                     <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext">Próximo</a>
 
@@ -104,6 +104,7 @@ else{
 </div>
 }
 @code {
+    public int QuantidadeTeorias = 0;
     public int IdCategoria { get; set; } = 1;
     Teoria? teoria = new();
     List<Teoria?>? Teorias = new();
@@ -151,10 +152,16 @@ else{
     //}
     protected override async Task OnInitializedAsync()
     {
+        await GetQuantidadeTeorias();
         await GetTeorias();
         await GetObrasMaisFaladas();
         await GetTopTeorias();
         await GetTopUsuarios();
+    }
+
+    async Task GetQuantidadeTeorias()
+    {
+        QuantidadeTeorias = await http.GetFromJsonAsync<int>($"{baseUrl}/teoriasqtd?idCategoria={IdCategoria}");
     }
 
     async Task GetTeorias()
