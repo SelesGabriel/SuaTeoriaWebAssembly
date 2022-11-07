@@ -11,13 +11,13 @@
         @if (!isFavorite)
         {
             <EditForm Model="favorite" OnSubmit="PostCurtida">
-                <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIR</button>
+                <button type="submit" class="mt-2 btn btn-light @Disabled"><b>CURTIR</b></button>
             </EditForm>
         }
         else
         {
             <EditForm Model="favorite" OnSubmit="DeleteCurtida">
-                <button type="submit" class="mt-2 btn btn-dark @Disabled">CURTIU</button>
+                <button type="submit" class="mt-2 btn btn-dark @Disabled"><b>CURTIU</b></button>
             </EditForm>
         }
 
