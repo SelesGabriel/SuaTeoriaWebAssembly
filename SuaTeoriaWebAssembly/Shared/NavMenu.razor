@@ -283,14 +283,14 @@
                 {
                     await js.InvokeVoidAsync("alert", "Cadastado com sucesso");
                     Disabled = "";
-                    nav.NavigateTo("", true);
+                    nav.NavigateTo(@nav.Uri, true);
                 }
             }
         }
         catch (Exception ex)
         {
             js.InvokeVoidAsync("alert", ex.Message);
-            nav.NavigateTo("", true);
+            nav.NavigateTo(@nav.Uri, true);
         }
 
     }
@@ -320,7 +320,7 @@
         isAnonimo = true;
         session.ClearAsync();
         userInfo = new Usuario() { Id = 0, Nome = "Anonimous" };
-        nav.NavigateTo("", true);
+        nav.NavigateTo(@nav.Uri, true);
     }
 
     #region Toggle

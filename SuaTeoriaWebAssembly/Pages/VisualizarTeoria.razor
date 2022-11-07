@@ -5,6 +5,7 @@
 @inject NavigationManager nav
 
 <div class="container my-5">
+
     <input type="image" style="height:50%; width:100%; cursor:default" src="@teoria.ImagemTitulo" />
     <div class="row">
 
@@ -20,8 +21,12 @@
                 <button type="submit" class="mt-2 btn btn-dark @Disabled"><b>CURTIU</b></button>
             </EditForm>
         }
+        <div style="float:right">
 
-        <div class="pt-3" style="color:white;">Criado por: <b>@usuario.User <br /></b> Data: <b>@teoria.DataCriacao.ToShortDateString()</b></div>
+           
+        </div>
+        
+        <div class="pt-3" style="color:white;"> <label style="color:white;float:right">@nomeObra.ToUpper()</label>Criado por: <b>@usuario.User <br /></b> Data: <b>@teoria.DataCriacao.ToShortDateString()</b></div>
     </div>
     <div class="col-sm-12 my-3 text-center" style="color:white;">
         <h2>@teoria.Titulo</h2>
@@ -41,6 +46,8 @@
     bool isFavorite;
     List<Favorite> favorites = new();
     Teoria teoria = new Teoria();
+    Obra obra = new();
+    string nomeObra = "unknown";
     [Parameter]
     public int IdTeoria { get; set; }
     MarkupString conteudo;
@@ -50,6 +57,18 @@
         await GetTeoriaAsync(IdTeoria);
         await GetCurtidas();
         await GetUsuario();
+        await GetObraById(teoria.IdObra);
+    }
+
+    async Task GetObraById(int IdObra)
+    {
+        if (IdObra != -1)
+        {
+            obra = await http.GetFromJsonAsync<Obra>($"{baseUrl}/obra/{IdObra}");
+            nomeObra = obra.Nome;
+        }
+
+
     }
 
     async Task GetUsuario()
@@ -69,14 +88,14 @@
             else
             {
                 await js.InvokeVoidAsync("alert", "Teoria não existe");
-                nav.NavigateTo("", true);
+                nav.NavigateTo(@nav.Uri, true);
             }
 
         }
         catch (Exception)
         {
 
-            nav.NavigateTo("", true);
+            nav.NavigateTo(@nav.Uri, true);
         }
 
     }

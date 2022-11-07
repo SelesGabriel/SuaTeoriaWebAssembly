@@ -79,7 +79,7 @@
                     {
                         userLogin = usuarios.First(x => x.User == usuario.User && x.Senha == usuario.Senha);
                         await SessionUser(userLogin);
-                        nav.NavigateTo("", true);
+                        nav.NavigateTo(nav.Uri, true);
                     }
                     else
                     {
@@ -89,7 +89,7 @@
                         if (count > tentativas)
                         {
                             await js.InvokeVoidAsync("alert", "Login ou senha inválido. Você será redirecionado para o início");
-                            nav.NavigateTo("", true);
+                            nav.NavigateTo(@nav.Uri, true);
                         }
 
                     }
@@ -110,7 +110,7 @@
         catch (Exception ex)
         {
             js.InvokeVoidAsync("alert", ex.Message);
-            nav.NavigateTo("", true);
+            nav.NavigateTo(@nav.Uri, true);
         }
         
 
