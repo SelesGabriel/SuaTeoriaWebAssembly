@@ -102,9 +102,11 @@
 
     async Task GetCurtidas()
     {
+
         string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
-        if (intUser == null || intUser == "0")
+        if (intUser != null || intUser != "0")
         {
+            userInfo.Id = Convert.ToInt32(intUser);
             favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
             isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && x.IdUsuario == userInfo.Id).Any();
         }
@@ -125,11 +127,7 @@
                 IdUsuario = userInfo.Id
             };
 
-        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
-        if (intUser == null || intUser == "0")
-        {
-            userInfo.Nome = "Anonimous";
-        }
+       
         if (userInfo.Nome == "Anonimous")
         {
             await js.InvokeVoidAsync("alert", "você precisa estar logado.");
