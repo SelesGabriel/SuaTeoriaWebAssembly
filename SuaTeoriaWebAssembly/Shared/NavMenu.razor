@@ -107,13 +107,17 @@
                     <span aria-hidden="false"></span> SUA TEORIA
                 </NavLink>
             </li>
-            @if (userInfo.Id == 1)
+            @if (userInfo != null)
             {
+                @if(userInfo.Id == 1)
+                {
+                    
                 <li class="nav-item">
                     <NavLink class="nav-link" href="painel-selesgabriel-adm">
                         <span aria-hidden="false"></span> PAINEL
                     </NavLink>
                 </li>
+                }
             }
         </ul>
         @*Usuario*@
@@ -299,19 +303,27 @@
     {
         await GetSessionUser();
     }
-
-    bool isAnonimo = false;
+    string baseUrl = Configuration.BaseUrl;
+    int? usuarioId;
+    bool isAnonimo = true;
     Usuario userInfo = new();
     Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
     public async Task GetSessionUser()
     {
-        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+        //userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+        usuarioId = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
 
-        if (userInfo == null || userInfo.Id == 0)
+        if (usuarioId == null || usuarioId == 0)
         {
-            userInfo = userAnonimo;
-            await session.SetItemAsync("SessionUser", userInfo);
+            //userInfo = userAnonimo;e 
+            //usuarioNome = userAnonimo.Nome;
+            //await session.SetItemAsync("SessionUser", userInfo);
             isAnonimo = true;
+        }
+        else
+        {
+            userInfo = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{usuarioId}");
+            isAnonimo = false;
         }
     }
 
