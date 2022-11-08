@@ -102,11 +102,14 @@
 
     async Task GetCurtidas()
     {
-        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
-        if (userInfo.Nome != "Anonimous")
+        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
+        if (intUser == null || intUser == "0")
         {
             favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");
             isFavorite = favorites.Where(x => x.IdCategoria == teoria.IdCategoria && x.IdObra == teoria.IdObra && x.IdTeoria == teoria.Id && x.IdUsuario == userInfo.Id).Any();
+        }
+        else{
+            userInfo.Nome = "Anonimous";
         }
     }
 
@@ -121,6 +124,12 @@
                 IdTeoria = teoria.Id,
                 IdUsuario = userInfo.Id
             };
+
+        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
+        if (intUser == null || intUser == "0")
+        {
+            userInfo.Nome = "Anonimous";
+        }
         if (userInfo.Nome == "Anonimous")
         {
             await js.InvokeVoidAsync("alert", "você precisa estar logado.");

@@ -92,6 +92,7 @@ else
     string baseUrl = Configuration.BaseUrl;
     public string Disabled = "";
 
+
     protected override async Task OnInitializedAsync()
     {
         await GetSessionUser();
@@ -105,13 +106,15 @@ else
 
     public async Task GetSessionUser()
     {
-        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
-
-        if (userInfo == null || userInfo.Id == 0)
+        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
+        if (intUser == null || intUser == "0")
         {
-            userInfo = userAnonimo;
-            await session.SetItemAsync("SessionUser", userInfo);
             isAnonimo = true;
+        }
+        else
+        {
+            userInfo.Id = Convert.ToInt32(intUser);
+            isAnonimo = false;
         }
     }
 

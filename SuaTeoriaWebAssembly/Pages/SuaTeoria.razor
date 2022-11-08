@@ -173,6 +173,7 @@
     List<Obra> obras = new();
     Obra obra = new();
 
+
     Teoria teoria = new();
 
     Usuario userInfo = new();
@@ -180,7 +181,12 @@
     protected override async Task OnInitializedAsync()
     {
         Disabled = false;
-        userInfo = await session.GetItemAsync<Usuario>("SessionUser");
+        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
+        if (intUser == null || intUser == "0")
+        {
+            userInfo.Nome = "Anonimous";
+        }
+
         //await js.InvokeVoidAsync("teste");
         await GetObrasAsync();
         await GetCategoriaAsync();

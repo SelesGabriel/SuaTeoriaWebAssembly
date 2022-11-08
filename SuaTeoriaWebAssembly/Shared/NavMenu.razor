@@ -109,14 +109,14 @@
             </li>
             @if (userInfo != null)
             {
-                @if(userInfo.Id == 1)
+                @if (userInfo.Id == 1)
                 {
-                    
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="painel-selesgabriel-adm">
-                        <span aria-hidden="false"></span> PAINEL
-                    </NavLink>
-                </li>
+
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="painel-selesgabriel-adm">
+                            <span aria-hidden="false"></span> PAINEL
+                        </NavLink>
+                    </li>
                 }
             }
         </ul>
@@ -236,6 +236,7 @@
     public string Disabled = "";
     string errorMessage = "";
 
+
     Usuario usuario = new();
     string baseUrl = Configuration.BaseUrl;
     async Task PostUsuario()
@@ -303,34 +304,32 @@
     {
         await GetSessionUser();
     }
-    string baseUrl = Configuration.BaseUrl;
+
     int? usuarioId;
     bool isAnonimo = true;
     Usuario userInfo = new();
     Usuario userAnonimo = new() { Id = 0, Nome = "Anonimous" };
     public async Task GetSessionUser()
     {
-        //userInfo = await session.GetItemAsync<Usuario>("SessionUser");
-        usuarioId = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
+        string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
 
-        if (usuarioId == null || usuarioId == 0)
+
+        if (intUser == null || intUser == "0")
         {
-            //userInfo = userAnonimo;e 
-            //usuarioNome = userAnonimo.Nome;
-            //await session.SetItemAsync("SessionUser", userInfo);
             isAnonimo = true;
         }
         else
         {
+            usuarioId = Convert.ToInt32(intUser);
             userInfo = await http.GetFromJsonAsync<Usuario>($"{baseUrl}/usuarios/{usuarioId}");
             isAnonimo = false;
         }
     }
 
-    public void ClearSession()
+    public async Task ClearSession()
     {
         isAnonimo = true;
-        session.ClearAsync();
+        await js.InvokeAsync<string>("localStorage.removeItem", "Usuario");
         userInfo = new Usuario() { Id = 0, Nome = "Anonimous" };
         nav.NavigateTo(@nav.Uri, true);
     }

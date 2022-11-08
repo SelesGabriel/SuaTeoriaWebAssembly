@@ -62,7 +62,7 @@
 
     public async Task SessionUser(Usuario us)
     {
-        await session.SetItemAsync("SessionUser", us);
+        //await session.SetItemAsync("SessionUser", us);
         await js.InvokeVoidAsync("localStorage.setItem", "Usuario",us.Id);
 
     }
