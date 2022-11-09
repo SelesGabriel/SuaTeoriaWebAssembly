@@ -186,19 +186,16 @@
         {
             userInfo.Nome = "Anonimous";
         }
+        else
+        {
+            userInfo.Id = Convert.ToInt32(intUser);
+        }
 
         //await js.InvokeVoidAsync("teste");
         await GetObrasAsync();
         await GetCategoriaAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            //await js.InvokeAsync<IJSObjectReference>("select2Function");
-        }
-    }
 
     async Task HandleFileSelect(IFileListEntry[] files)
     {
