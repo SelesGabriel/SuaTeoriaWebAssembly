@@ -283,7 +283,7 @@
             {
                 teoria.IdUsuario = userInfo.Id;
                 await http.PostAsJsonAsync<Teoria>($"{baseUrl}/teoria", teoria);
-                await js.InvokeVoidAsync("alert", "Tudo certo!");
+                await js.InvokeVoidAsync("alert", "Teoria criada com sucesso!");
                 nav.NavigateTo("");
             }
         }
