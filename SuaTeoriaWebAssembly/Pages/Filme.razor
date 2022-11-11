@@ -7,103 +7,105 @@
 {
     <div class="spinner"></div>
 }
-else{
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-md-7 col-sm-6">
-            <div class="container">
-                <h2 class="fontePadrao" style="color:white;">AS MAIS RECENTES</h2>
-                <div class="dropdown-divider"></div>
-                <nav aria-label="Page navigation example">
-
-
-                </nav>
-                <div class="row">
-                    @foreach (var item in Teorias)
-                    {
-                        <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
-                            <a href="visualizarteoria/@item.Id" title="">
-                                <img src="@item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
-                                <p style="color:#d3d3d3">@item.Titulo</p>
-                            </a>
-                        </div>
-                    }
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <div class="container">
+                    <h2 class="fontePadrao" style="color:white;">AS MAIS RECENTES</h2>
                     <div class="dropdown-divider"></div>
                     <nav aria-label="Page navigation example">
 
-                        <div class="my-4">
 
-                            @if (Teorias != null)
-                            {
-                                if (skip != 0)
-                                {
-                                    <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
-
-                                }
-                                    if (QuantidadeTeorias > 8)
-                                {
-                                    <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext">Próximo</a>
-
-                                }
-                            }
-                        </div>
                     </nav>
+                    <div class="row">
+                        @foreach (var item in Teorias)
+                        {
+                            <div class="col-lg-6 col-md-12 py-5" id="divTeoria">
+                                <a href="visualizarteoria/@item.Id" title="">
+                                    <img src="@item.ImagemTitulo" id="imagemInicio" style="border-radius:10px" />
+                                    <p style="color:#d3d3d3">@item.Titulo</p>
+                                </a>
+                            </div>
+                        }
+                        <div class="dropdown-divider"></div>
+                        <nav aria-label="Page navigation example">
+
+                            <div class="my-4">
+
+                                @if (Teorias != null)
+                                {
+                                    if (skip != 0)
+                                    {
+                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious" disabled="@Disabled">Anterior</a>
+
+                                    }
+                                    if (QuantidadeTeorias > 8 && Teorias.Count() == 8)
+                                    {
+                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext" disabled="@Disabled">Próximo</a>
+
+                                    }
+                                }
+                            </div>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-5 col-sm-6">
-            <div class="container">
-                <h4 class="fontePadrao" style="color:#d3d3d3;">MAIS FALADAS</h4>
+            <div class="col-lg-4 col-md-5 col-sm-6">
+                <div class="container">
+                    <h4 class="fontePadrao" style="color:#d3d3d3;">MAIS FALADAS</h4>
 
-                @for (var o = 0; o < ObrasMaisFaladas.Count; o++)
-                {
-                    if (ObrasMaisFaladas[o].Obra != null)
+                    @for (var o = 0; o < ObrasMaisFaladas.Count; o++)
                     {
+                        if (ObrasMaisFaladas[o].Obra != null)
+                        {
 
+                            <div class="dropdown-divider"></div>
+                            <div class="row py-2">
+                                <div class="col-6"><a class="disabled"><img id="menuLateralImg" src="@ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
+                                <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
+                            </div>
+                        }
+                    }
+
+                    <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORIAS</h4>
+                    @foreach (var t in TopTeorias)
+                    {
                         <div class="dropdown-divider"></div>
-                        <div class="row py-2">
-                            <div class="col-6"><a class="disabled"><img id="menuLateralImg" src="@ObrasMaisFaladas[o].Obra.ImagemObra" style="border-radius:10px" /></a></div>
-                            <div class="col-6"><label style="text-decoration:none;color:#d3d3d3"> @ObrasMaisFaladas[o].Obra.Nome</label></div>
+                        <div class="row py-2" style="overflow:hidden;max-height:15vh;">
+                            <div class="col-6"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="@t.Teoria.ImagemTitulo" style="border-radius:10px" /></a></div>
+                            <div class="col-6"><a title="@t.Teoria.Titulo" href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
                         </div>
                     }
-                }
 
-                <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORIAS</h4>
-                @foreach (var t in TopTeorias)
-                {
-                    <div class="dropdown-divider"></div>
-                    <div class="row py-2" style="overflow:hidden;max-height:15vh;">
-                        <div class="col-6"><a href="visualizarteoria/@t.IdTeoria"><img id="menuLateralImg" src="@t.Teoria.ImagemTitulo" style="border-radius:10px" /></a></div>
-                        <div class="col-6"><a title="@t.Teoria.Titulo" href="visualizarteoria/@t.IdTeoria" style="text-decoration:none;color:#d3d3d3">@t.Teoria.Titulo</a></div>
-                    </div>
-                }
-
-                <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
-                @foreach (var t in TopUsuarios)
-                {
-                    <div class="dropdown-divider"></div>
-                    <div class="row">
-                        @if (!String.IsNullOrEmpty(t.Usuario.Foto))
-                        {
-                            <div class="col-6"><a href="#"><img id="menuLateralImg" src="@t.Usuario.Foto" style="border-radius:10px" /></a></div>
-                        }
-                        else
-                        {
-                            <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png style="border-radius:10px" /></a></div>
-                        }
-                        <div class="col-6"><a href="#" style="text-decoration:none;color:#d3d3d3">@t.Usuario.User</a></div>
-                    </div>
-                }
+                    <h4 class="fontePadrao mt-5" style="color:#d3d3d3;">TOP TEORISTAS</h4>
+                    @foreach (var t in TopUsuarios)
+                    {
+                        <div class="dropdown-divider"></div>
+                        <div class="row">
+                            @if (!String.IsNullOrEmpty(t.Usuario.Foto))
+                            {
+                                <div class="col-6"><a href="#"><img id="menuLateralImg" src="@t.Usuario.Foto" style="border-radius:10px" /></a></div>
+                            }
+                            else
+                            {
+                                <div class="col-4"><a href="#"><img id="menuLateralImg" src=images/user.png style="border-radius:10px" /></a></div>
+                            }
+                            <div class="col-6"><a href="#" style="text-decoration:none;color:#d3d3d3">@t.Usuario.User</a></div>
+                        </div>
+                    }
+                </div>
             </div>
+
+
         </div>
 
 
     </div>
-
-
-</div>
 }
 @code {
+    public bool Disabled = false;
     public int QuantidadeTeorias = 0;
     public int IdCategoria { get; set; } = 1;
     Teoria? teoria = new();
@@ -189,6 +191,7 @@ else{
     #region Pagination
     async Task PaginationPrevious()
     {
+        Disabled = true;
         if (skip == 8)
         {
             skip = 0;
@@ -198,11 +201,15 @@ else{
             skip = skip - 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}?idCategoria={IdCategoria}");
+        {
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}&idCategoria={IdCategoria}");
+        }
+        Disabled = false;
     }
 
     async Task PaginationNext()
     {
+        Disabled = true;
         if (skip == 0)
         {
             skip = 8;
@@ -212,7 +219,10 @@ else{
             skip = skip + 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}?idCategoria={IdCategoria}");
+        {
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}&idCategoria={IdCategoria}");
+        }
+        Disabled = false;
     }
     #endregion
 }

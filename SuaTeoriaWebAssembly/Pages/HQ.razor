@@ -38,12 +38,12 @@
                                 {
                                     if (skip != 0)
                                     {
-                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious">Anterior</a>
+                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationPrevious" disabled="@Disabled">Anterior</a>
 
                                     }
-                                    if (QuantidadeTeorias > 8)
+                                    if (QuantidadeTeorias > 8 && Teorias.Count() == 8)
                                     {
-                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext">Próximo</a>
+                                        <a class="btn btn-dark" style="cursor:default" @onclick="PaginationNext" disabled="@Disabled">Próximo</a>
 
                                     }
                                 }
@@ -106,6 +106,7 @@
 </div>
 
 @code {
+    public bool Disabled = false;
     public int QuantidadeTeorias = 0;
     public int IdCategoria { get; set; } = 4;
     Teoria? teoria = new();
@@ -191,6 +192,7 @@
     #region Pagination
     async Task PaginationPrevious()
     {
+        Disabled = true;
         if (skip == 8)
         {
             skip = 0;
@@ -200,11 +202,15 @@
             skip = skip - 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}?idCategoria={IdCategoria}");
+        {
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}&idCategoria={IdCategoria}");
+        }
+        Disabled = false;
     }
 
     async Task PaginationNext()
     {
+        Disabled = true;
         if (skip == 0)
         {
             skip = 8;
@@ -214,7 +220,10 @@
             skip = skip + 8;
         }
         if (Teorias != null)
-            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}?idCategoria={IdCategoria}");
+        {
+            Teorias = await http.GetFromJsonAsync<List<Teoria>>($"{baseUrl}/teorias?skip={skip}&take={take}&idCategoria={IdCategoria}");
+        }
+        Disabled = false;
     }
     #endregion
 }
