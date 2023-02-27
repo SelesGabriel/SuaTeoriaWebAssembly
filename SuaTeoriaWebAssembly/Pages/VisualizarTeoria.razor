@@ -104,7 +104,7 @@
     {
 
         string? intUser = await js.InvokeAsync<string>("localStorage.getItem", "Usuario");
-        if (intUser != null || intUser != "0")
+        if (intUser != null && intUser != "0")
         {
             userInfo.Id = Convert.ToInt32(intUser);
             favorites = await http.GetFromJsonAsync<List<Favorite>>($"{baseUrl}/curtidas");

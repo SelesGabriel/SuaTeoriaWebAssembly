@@ -1,0 +1,40 @@
+﻿#image1 {
+    height: 450px;
+    width: 355px;
+    left: 204px;
+    top: 273px;
+    float: left;
+    position: relative;
+    z-index: 2;
+    object-fit: cover;
+    object-position: 0px 0px;
+    -webkit-mask-image: radial-gradient(circle 361px at 181px -636px, transparent 0, transparent 667px, black 21px);
+    border-radius: 40% / 0 0 19% 17%;
+}
+
+#image2 {
+    height: 450px;
+    width: 355px;
+    left: 268px;
+    top: 147px;
+    float: left;
+    position: relative;
+    z-index: 2;
+    object-fit: cover;
+    object-position: 100% 0px;
+    -webkit-mask-image: radial-gradient(circle 361px at 181px -636px, transparent 0, transparent 667px, black 21px);
+    border-radius: 40% / 0 0 19% 17%;
+}
+
+
+#mockup {
+    height: 100%;
+    width: 100%;
+    background-image: url('images/mockup.jpg');
+    position: absolute;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+
+

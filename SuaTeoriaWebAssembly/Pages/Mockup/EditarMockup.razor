@@ -1,0 +1,55 @@
+﻿@page "/editarmockup"
+@inject IJSRuntime js
+@inject HttpClient http
+@inject NavigationManager nav
+
+
+<h3>IMAGEM ILUSTRATIVA</h3>
+<BlazorInputFile.InputFile OnChange="HandleFileSelect" style="display:none;" id="imagemTituloSuaTeoria"></BlazorInputFile.InputFile>
+<label for="imagemTituloSuaTeoria"
+       style="background-color:#ccc;width:100%;
+            border-radius:5px;cursor:pointer;padding:10px;text-align:center">
+    Clique aqui para escolher uma imagem para ser capa da sua teoria &#187
+</label>
+@if (!String.IsNullOrEmpty(@teoria.ImagemTitulo))
+{
+    <input type="image" id="image1" src="data:image/jpeg;base64, @teoria.ImagemTitulo" disabled="disabled" />
+    <input type="image" id="image2" src="data:image/jpeg;base64, @teoria.ImagemTitulo" disabled="disabled" />
+}
+<div id="mockup"></div>
+
+
+@code {
+
+    string errMessage = "";
+    string mensagem = "Escolha uma imagem para ser capa da sua teoria";
+    Teoria teoria = new();
+    IFileListEntry? file;
+
+
+    async Task HandleFileSelect(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            if (file.Size > 2000000)
+            {
+                errMessage = "Tamanho limite máximo da imagem: 2MB";
+                await js.InvokeVoidAsync("alert", errMessage);
+                return;
+            }
+
+        }
+        await GetBase64File();
+        StateHasChanged();
+    }
+
+    async Task GetBase64File()
+    {
+        byte[] bytes;
+        var memoryStream = await file.ReadAllAsync();
+        bytes = memoryStream.ToArray();
+        teoria.ImagemTitulo = Convert.ToBase64String(bytes);
+        mensagem = "";
+    }
+}
